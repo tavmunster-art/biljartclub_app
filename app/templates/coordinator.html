@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Coordinator</title>
+
+<link rel="stylesheet" href="/static/css/coordinator.css">
+</head>
+
+<body>
+
+<div style="position: absolute; top: 10px; right: 10px; background: #f0f0f0; padding: 10px 15px; border: 1px solid #ccc; border-radius: 5px; font-family: monospace; font-size: 14px;">
+  <strong>Server IP:</strong> {{server_ip}}:5000
+</div>
+
+<div style="display:flex; gap:10px; align-items:center; margin-bottom:15px;">
+<h1>Coordinator</h1>
+<div style="
+display:flex;
+align-items:center;
+gap:10px;
+margin-left:20px;
+">
+
+<label style="font-weight:bold;">
+Datum:
+</label>
+
+<input
+type="date"
+id="manualDate"
+style="
+font-size:16px;
+padding:6px;
+"
+>
+
+</div>
+
+<button onclick="shutdownServer()"
+style="
+background:red;
+color:white;
+font-size:18px;
+padding:10px 14px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+">
+🛑 Stop Server
+</button>
+
+</div>
+
+<hr>
+
+<div id="msg" style="color:red; font-weight:bold;"></div>
+
+<div class="container">
+
+<!-- ================= LINKS ================= -->
+<div class="column left-column">
+
+<h2>Matching Spelers</h2> 
+
+<h3>Aanwezig-Caramboles-Verwijder uit DB</h3>
+
+<div class="players-box">
+<form id="playersForm">
+
+{% for p in players %}
+<label>
+<input type="checkbox" name="players" value="{{p.name}}">
+{{p.name}} (L: {{p.target_libre}} | B: {{p.target_band}})
+</label>
+
+<button type="button" onclick="deletePlayer('{{p.name}}')">❌</button>
+
+<br>
+{% endfor %}
+
+</form>
+</div>
+
+<button onclick="createMatches()">Maak automatische matches</button>
+
+<h3>Handmatige match</h3>
+
+<select id="p1">
+{% for p in players %}
+<option value="{{p.name}}">{{p.name}}</option>
+{% endfor %}
+</select>
+
+<select id="p2">
+{% for p in players %}
+<option value="{{p.name}}">{{p.name}}</option>
+{% endfor %}
+</select>
+
+<select id="gameType">
+<option value="libre">Libre</option>
+<option value="band">Band</option>
+</select>
+
+<br>
+<button onclick="createManual()">Maak match</button>
+
+</div>
+
+
+<!-- ================= MIDDEN ================= -->
+<div class="column">
+
+<h2>Gebruik</h2>
+
+<h3>Nieuwe speler</h3>
+
+<form method="POST" action="/players/add">
+<input name="name" placeholder="Naam speler" required>
+<input name="avg_libre" type="number" step="0.01" placeholder="Libre moyenne" required>
+<input name="avg_band" type="number" step="0.01" placeholder="Band moyenne" required>
+<button type="submit">Toevoegen</button>
+</form>
+
+<br>
+
+<h3>Overzichten</h3>
+
+<div class="menu-buttons">
+
+<a href="/history">
+<button class="big-button">📜 Historie</button>
+</a>
+
+<a href="/ranking">
+<button class="big-button">🏆 Ranking</button>
+</a>
+
+<a href="/dashboard">
+<button class="big-button">📊 Dashboard</button>
+</a>
+
+</div>
+
+</div>
+
+
+<!-- ================= RECHTS ================= -->
+<div class="column">
+
+<h2>Administratie</h2>
+
+<h3>Instellingen</h3>
+
+Max beurten:<br>
+<input id="turnsInput" type="number">
+<button onclick="saveTurns()">Opslaan</button>
+
+<hr>
+
+<a href="/help"><button>Gebruiksaanwijzing</button></a>
+
+<h3>Backup & Rapport</h3>
+
+<button onclick="makeBackup()">Maak backup</button>
+<button onclick="generateReport()">Maak rapport</button>
+
+<br><br>
+
+<select id="backupList"></select><br>
+<button onclick="restoreBackup()">Herstel backup</button>
+
+<hr>
+
+<button onclick="closeSeason()">Seizoen afsluiten</button>
+
+</div>
+
+</div>
+
+
+<!-- ================= MATCHES ================= -->
+<hr>
+
+<h2>Te bevestigen resultaten</h2>
+
+<div class="pending-grid">
+
+{% for r in pending %}
+<div class="card">
+
+<div>
+{{r.player1}} vs {{r.player2}}
+</div>
+
+<div style="margin-top:10px; font-size:20px; font-weight:bold;">
+{{r.total1}} - {{r.total2}}
+</div>
+
+<div>
+{{r.turns}} beurten
+</div>
+
+<div>
+{{r.game_type|upper}}
+</div>
+
+<button onclick="approve('{{r.match_id}}')">
+Bevestigen
+</button>
+
+</div>
+{% endfor %}
+</div>
+
+
+<hr>
+
+<h2>Actieve wedstrijden</h2>
+
+<div class="matches">
+
+{% for m in matches %}
+<div class="card {% if m.status == 'finished' %}finished{% endif %}">
+
+<div style="font-weight:bold; margin-bottom:8px;">
+{{m.player1}} vs {{m.player2}}
+</div>
+
+<div>
+{{m.game_type|upper}}
+</div>
+
+{% if m.status == "finished" %}
+<div class="winner">🏆 {{m.winner}}</div>
+{% else %}
+{% if m.status == "ready" %}
+<div>🟢 Beschikbaar</div>
+{% elif m.status == "busy" %}
+<div>🟠 Bezig</div>
+{% elif m.status == "finished" %}
+<div class="winner">🏆 {{m.winner}}</div>
+{% endif %}
+
+<button onclick="manualEntry('{{m.id}}')">Handmatig</button>
+{% endif %}
+
+</div>
+{% endfor %}
+
+</div>
+
+
+<!-- ================= MODAL ================= -->
+
+<div id="manualModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+
+<div style="background:white; width:300px; margin:100px auto; padding:20px; border-radius:10px;">
+
+<h3>Handmatige invoer</h3>
+
+<input id="m_total1" type="number" placeholder="Caramboles speler 1"><br><br>
+<input id="m_total2" type="number" placeholder="Caramboles speler 2"><br><br>
+<input id="m_turns" type="number" placeholder="Aantal beurten"><br><br>
+
+<button onclick="saveManual()">Opslaan</button>
+<button onclick="closeManual()">Annuleren</button>
+
+</div>
+</div>
+
+<script src="/static/js/coordinator.js"></script>
+
+
+</body>
+</html>

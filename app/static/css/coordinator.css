@@ -1,0 +1,113 @@
+
+body {
+    font-family: Arial;
+    margin: 20px;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+}
+
+.column {
+    flex: 1;
+}
+
+.left-column {
+    flex: 1.4;
+}
+
+h2 { margin-top: 0; }
+
+button { margin-top: 5px; margin-bottom: 10px; }
+
+/* spelerslijst */
+.players-box {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background: white;
+}
+
+/* matches */
+.matches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card {
+    width: 180px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    background: white;
+}
+
+.card.finished {
+    background: #e8ffe8;
+    border-color: green;
+}
+
+.winner {
+    color: green;
+    font-weight: bold;
+}
+
+/* pending resultaten */
+.pending-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+/* overzicht knoppen */
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.menu-buttons a {
+    text-decoration: none;
+}
+
+.big-button {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    border-radius: 10px;
+    border: 1px solid #888;
+    background: white;
+    cursor: pointer;
+}
+
+.big-button:hover {
+    background: #eef;
+}
+
+/* compactere formulieren */
+input, select {
+    padding: 6px;
+    margin: 4px;
+}
+
+/* mooiere cards */
+.card {
+    width: 220px;
+    min-height: 120px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 12px;
+    background: white;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+    }
+}

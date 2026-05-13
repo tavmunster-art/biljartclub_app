@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+instance/
+backups/
+reports/
+build/
+dist/
+_internal/
+*.spec

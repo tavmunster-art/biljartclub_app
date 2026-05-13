@@ -1,0 +1,44 @@
+<style>
+body {
+    font-family: Arial;
+    margin: 20px;
+}
+
+/* TABLE */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px 14px;
+    text-align: center;
+}
+
+/* HEADER */
+th {
+    background-color: #f0f0f0;
+    cursor: pointer;
+    position: sticky;
+    top: 0;
+}
+
+/* ZEBRA */
+tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+/* HOVER */
+tr:hover {
+    background-color: #e6f2ff;
+}
+
+/* SORT INDICATOR */
+th.sorted {
+    background-color: #d0e4ff;
+}
+
+</style>

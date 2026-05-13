@@ -1,0 +1,46 @@
+
+body {
+    font-family: Arial;
+    margin: 20px;
+}
+
+/* TOP BAR */
+.controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+/* CARDS */
+.card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    background: #f9f9f9;
+    margin-bottom: 20px;
+}
+
+/* AVG DISPLAY */
+.avg-box {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* CHART GRID */
+.charts {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.chart-box {
+    flex: 1;
+    min-width: 400px;
+}
+
+canvas {
+    width: 100% !important;
+    height: 300px !important;
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Teller</title>
+<link rel="stylesheet" href="/static/css/teller.css">
+<meta name="viewport" content="width=device-width, initial-scale=0.47">
+
+</head>
+<body>
+
+<h2>{{match.player1}} vs {{match.player2}}</h2>
+<h3>{{match.game_type|upper}}</h3>
+
+<div class="player">
+<div class="name">{{match.player1}}</div>
+<div class="target">Te maken caramboles: {{match.target1}}</div>
+<div class="score" id="t1">0</div>
+
+<!-- +1 knop -->
+<button class="big" onclick="add(1,1)">+1</button>
+
+<!-- serie -->
+<div class="series-box">
+<input id="s1" type="number" placeholder="serie" style="width:80px;">
+<button onclick="addSeries(1)">OK</button>
+</div>
+
+<button class="minus" onclick="add(1,-1)">−</button>
+</div>
+
+
+<div class="player">
+<div class="name">{{match.player2}}</div>
+<div class="target">Te maken caramboles: {{match.target2}}</div>
+<div class="score" id="t2">0</div>
+
+<button class="big" onclick="add(2,1)">+1</button>
+
+<div class="series-box">
+<input id="s2" type="number" placeholder="serie" style="width:80px;">
+<button onclick="addSeries(2)">OK</button>
+</div>
+
+<button class="minus" onclick="add(2,-1)">−</button>
+</div>
+
+<hr>
+
+<div class="turns">
+Beurten: <span id="turns">0</span>
+</div>
+
+<div class="actions">
+<button class="next-btn" onclick="nextTurn()">Volgende beurt</button>
+<button class="undo-btn" onclick="undo()">Undo</button>
+</div>
+
+<div class="actions">
+<button class="finish-btn" onclick="finish()">Afsluiten</button>
+</div>
+<script>
+const MATCH_ID = "{{match.id}}";
+const TARGET1 = {{match.target1}};
+const TARGET2 = {{match.target2}};
+</script>
+<script src="/static/js/teller.js"></script>
+</body>
+</html>
