@@ -20,6 +20,7 @@ function render(id, data){
         <th>Caramboles</th>
         <th>Moyenne</th>
         <th>Punten</th>
+        <th>Max. Serie</th>
     </tr>`;
 
     data.forEach(r=>{
@@ -31,6 +32,7 @@ function render(id, data){
             <td>${r.total}</td>
             <td>${(r.avg || 0).toFixed(3)}</td>
             <td>${r.points || 0}</td>
+            <td>${r.high_run || 0}</td>
         </tr>`;
     });
 

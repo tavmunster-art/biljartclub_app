@@ -99,6 +99,13 @@ async function createManual(){
 
 function manualEntry(id){
     currentMatchId = id;
+
+    document.getElementById("m_total1").value = "";
+    document.getElementById("high_run1").value = "";
+    document.getElementById("m_total2").value = "";
+    document.getElementById("high_run2").value = "";
+    document.getElementById("m_turns").value = "";
+
     document.getElementById("manualModal").style.display = "block";
 }
 
@@ -112,24 +119,42 @@ async function saveManual(){
     const t2 = parseInt(m_total2.value);
     const tr = parseInt(m_turns.value);
 
+
     if(isNaN(t1) || isNaN(t2) || isNaN(tr)){
         alert("Ongeldige invoer");
         return;
     }
 
-    await fetch("/manual/result", {
-        method:"POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-            match_id: currentMatchId,
-            total1: t1,
-            total2: t2,
-            turns: tr,
-            manual_date: document.getElementById("manualDate").value
-        })
-    });
+    try {
+        const res = await fetch("/manual/result", {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({
+                match_id: currentMatchId,
+                total1: t1,
+                total2: t2,
+                turns: tr,
+                high_run1:
+                parseInt(document.getElementById("high_run1").value) || 0,
 
-    location.reload();
+                high_run2:
+                parseInt(document.getElementById("high_run2").value) || 0,
+
+                manual_date: document.getElementById("manualDate").value
+            })
+        });
+
+        const data = await res.json();
+
+        if(!res.ok || data.error){
+            alert(data.error || "Opslaan mislukt");
+            return;
+        }
+
+        location.reload();
+    } catch(error) {
+        alert("Opslaan mislukt: geen verbinding met de server");
+    }
 }
 
 // SETTINGS
@@ -158,9 +183,43 @@ async function saveTurns(){
     location.reload();
 }
 
+async function changePassword(){
+    const currentPassword = document.getElementById("currentPassword").value;
+    const newPassword = document.getElementById("newPassword").value;
+    const confirmation = document.getElementById("confirmPassword").value;
+
+    const res = await fetch("/coordinator/password", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            current_password: currentPassword,
+            new_password: newPassword,
+            confirmation: confirmation
+        })
+    });
+    const data = await res.json();
+
+    if(data.error){
+        alert(data.error);
+        return;
+    }
+
+    alert("Wachtwoord gewijzigd");
+    document.getElementById("currentPassword").value = "";
+    document.getElementById("newPassword").value = "";
+    document.getElementById("confirmPassword").value = "";
+}
+
 // BACKUP
 async function makeBackup(){
-    await fetch("/backup/create", {method:"POST"});
+    const res = await fetch("/backup/create", {method:"POST"});
+    const data = await res.json();
+
+    if(data.error){
+        alert(data.error);
+        return;
+    }
+
     loadBackups();
 }
 
@@ -176,11 +235,18 @@ async function loadBackups(){
 
 async function restoreBackup(){
 
-    await fetch("/backup/restore", {
+    const res = await fetch("/backup/restore", {
         method:"POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({file: backupList.value})
     });
+
+    const data = await res.json();
+
+    if(data.error){
+        alert(data.error);
+        return;
+    }
 
     location.reload();
 }

@@ -1,7 +1,13 @@
 from flask import Blueprint, request
-from app.database import get_db
+from app.database import (
+    get_db,
+    load_pending_results,
+    save_pending_result
+)
+from app.auth import coordinator_required
 import uuid
 import random
+import threading
 from datetime import datetime
 
 matches_bp = Blueprint("matches", __name__)
@@ -9,6 +15,26 @@ matches_bp = Blueprint("matches", __name__)
 ACTIVE_MATCHES = {}
 
 PENDING_RESULTS = {}
+MATCH_LOCK = threading.Lock()
+
+
+def has_active_matches():
+    active_statuses = {"ready", "busy", "pending"}
+    return any(
+        match.get("status") in active_statuses
+        for match in ACTIVE_MATCHES.values()
+    ) or bool(PENDING_RESULTS)
+
+
+def restore_pending_results():
+    PENDING_RESULTS.clear()
+    for result in load_pending_results():
+        PENDING_RESULTS[result["match_id"]] = result
+
+
+def set_pending_result(result):
+    save_pending_result(result)
+    PENDING_RESULTS[result["match_id"]] = result
 
 def get_max_turns(conn):
     row = conn.execute(
@@ -16,11 +42,61 @@ def get_max_turns(conn):
     ).fetchone()
     return int(row["value"]) if row else 20
 
+def build_pending_result(match, data):
+    total1 = data.get("total1", 0)
+    total2 = data.get("total2", 0)
+    turns = data.get("turns") or 1
+
+    start1 = match["start_avg1"]
+    start2 = match["start_avg2"]
+    target1 = int(start1 * turns)
+    target2 = int(start2 * turns)
+
+    avg1 = total1 / turns
+    avg2 = total2 / turns
+
+    base1 = min(round((avg1 / start1) * 10), 10) if start1 else 0
+    base2 = min(round((avg2 / start2) * 10), 10) if start2 else 0
+
+    if total1 >= target1 and total2 < target2:
+        winner = match["player1"]
+    elif total2 >= target2 and total1 < target1:
+        winner = match["player2"]
+    else:
+        winner = (
+            match["player1"] if base1 > base2
+            else match["player2"] if base2 > base1
+            else "draw"
+        )
+
+    bonus1 = 2 if winner == match["player1"] else (1 if winner == "draw" else 0)
+    bonus2 = 2 if winner == match["player2"] else (1 if winner == "draw" else 0)
+
+    return {
+        "match_id": match["id"],
+        "player1": match["player1"],
+        "player2": match["player2"],
+        "game_type": match["game_type"],
+        "total1": total1,
+        "total2": total2,
+        "turns": turns,
+        "avg1": avg1,
+        "avg2": avg2,
+        "points1": base1 + bonus1,
+        "points2": base2 + bonus2,
+        "winner": winner,
+        "start1": start1,
+        "start2": start2,
+        "high_run1": data.get("high_run1", 0),
+        "high_run2": data.get("high_run2", 0)
+    }
+
 
 # =============================
 # CREATE MATCHES
 # =============================
 @matches_bp.route("/matches/create", methods=["POST"])
+@coordinator_required
 def create_matches():
 
     data = request.json
@@ -152,6 +228,7 @@ def create_matches():
 # CREATE MANUAL MATCH
 # =============================
 @matches_bp.route("/matches/manual", methods=["POST"])
+@coordinator_required
 def create_manual_match():
 
     data = request.json
@@ -209,6 +286,7 @@ def create_manual_match():
 
 
 @matches_bp.route("/manual/result", methods=["POST"])
+@coordinator_required
 def manual_result():
 
     data = request.json
@@ -219,6 +297,11 @@ def manual_result():
 
     if not m:
         return {"error": "match niet gevonden"}
+
+    if m["status"] != "ready":
+        return {
+            "error": f"match al verwerkt (status: {m['status']})"
+        }
 
     total1 = data.get("total1", 0)
     total2 = data.get("total2", 0)
@@ -250,10 +333,7 @@ def manual_result():
     bonus1 = 2 if winner == p1 else (1 if winner == "draw" else 0)
     bonus2 = 2 if winner == p2 else (1 if winner == "draw" else 0)
 
-    points1 = base1 + bonus1
-    points2 = base2 + bonus2
-
-    PENDING_RESULTS[match_id] = {
+    set_pending_result({
         "match_id": match_id,
         "player1": p1,
         "player2": p2,
@@ -263,12 +343,15 @@ def manual_result():
         "turns": turns,
         "avg1": avg1,
         "avg2": avg2,
-        "points1": points1,
-        "points2": points2,
+        "points1": base1 + bonus1,
+        "points2": base2 + bonus2,
         "winner": winner,
         "start1": start1,
-        "start2": start2
-    }
+        "start2": start2,
+        "high_run1": data.get("high_run1", 0),
+        "high_run2": data.get("high_run2", 0),
+        "recorded_at": data.get("manual_date")
+    })
 
     m["status"] = "pending"
 
@@ -281,18 +364,18 @@ def manual_result():
 def claim_match():
 
     match_id = request.json["match_id"]
-    m = ACTIVE_MATCHES.get(match_id)
+    with MATCH_LOCK:
+        m = ACTIVE_MATCHES.get(match_id)
 
-    if not m:
-        return {"error": "niet gevonden"}
+        if not m:
+            return {"error": "niet gevonden"}
 
-    if m["status"] != "ready":
-        return {"error": "al bezet"}
+        if m["status"] != "ready":
+            return {"error": "al bezet"}
 
-    m["status"] = "busy"
-    claim_token = str(uuid.uuid4())
-
-    m["claimed_by"] = claim_token
+        m["status"] = "busy"
+        claim_token = str(uuid.uuid4())
+        m["claimed_by"] = claim_token
 
     return {
         "ok": True,
@@ -307,7 +390,6 @@ def claim_match():
 # =============================
 @matches_bp.route("/match/finish", methods=["POST"])
 def finish_match():
-
     data = request.json
     match_id = data["match_id"]
 
@@ -320,62 +402,10 @@ def finish_match():
     if m.get("claimed_by") != data.get("claim_token"):
         return {"error": "niet jouw match"}
 
-    if m["status"] == "finished":
+    if m["status"] != "busy":
         return {"error": "al klaar"}
 
-    total1 = data.get("total1", 0)
-    total2 = data.get("total2", 0)
-    turns = data.get("turns") or 1
-
-    p1 = m["player1"]
-    p2 = m["player2"]
-    game = m["game_type"]
-
-    start1 = m["start_avg1"]
-    start2 = m["start_avg2"]
-
-    target1 = int(start1 * turns)
-    target2 = int(start2 * turns)
-
-    avg1 = total1 / turns if turns else 0
-    avg2 = total2 / turns if turns else 0
-
-    base1 = min(round((avg1 / start1) * 10), 10) if start1 else 0
-    base2 = min(round((avg2 / start2) * 10), 10) if start2 else 0
-
-    if total1 >= target1 and total2 < target2:
-        winner = p1
-    elif total2 >= target2 and total1 < target1:
-        winner = p2
-    else:
-        winner = p1 if base1 > base2 else p2 if base2 > base1 else "draw"
-
-    bonus1 = 2 if winner == p1 else (1 if winner == "draw" else 0)
-    bonus2 = 2 if winner == p2 else (1 if winner == "draw" else 0)
-
-    points1 = base1 + bonus1
-    points2 = base2 + bonus2
-
-    m["status"] = "finished"
-    m["winner"] = winner
-
-    PENDING_RESULTS[match_id] = {
-        "match_id": match_id,
-        "player1": p1,
-        "player2": p2,
-        "game_type": game,
-        "total1": total1,
-        "total2": total2,
-        "turns": turns,
-        "avg1": avg1,
-        "avg2": avg2,
-        "points1": points1,
-        "points2": points2,
-        "winner": winner,
-        "start1": start1,
-        "start2": start2
-    }
-
+    set_pending_result(build_pending_result(m, data))
     m["status"] = "pending"
 
     return {"ok": True}

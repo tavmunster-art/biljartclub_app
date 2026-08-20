@@ -23,6 +23,7 @@ function render(id, data){
         <th onclick="sort('${id}','points')">Punten</th>
         <th>Caramboles</th>
         <th>Beurten</th>
+        <th>Max. Serie</th>
     </tr>`;
 
     data.forEach(r=>{
@@ -33,6 +34,7 @@ function render(id, data){
             <td>${r.points}</td>
             <td>${r.caramboles}</td>
             <td>${r.turns}</td>
+            <td>${r.high_run || 0}</td>
         </tr>`;
     });
 

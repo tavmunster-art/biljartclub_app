@@ -1,7 +1,9 @@
 from flask_socketio import SocketIO, emit
-from app.database import get_db
-from datetime import datetime
-from app.routes.matches import ACTIVE_MATCHES
+from app.routes.matches import (
+    ACTIVE_MATCHES,
+    build_pending_result,
+    set_pending_result
+)
 
 socketio = SocketIO(
     async_mode="threading"
@@ -14,7 +16,10 @@ def register_socket_events(socketio):
     def score_update(data):
 
         m = ACTIVE_MATCHES.get(data["match_id"])
-        if not m:
+        if not m or m.get("status") != "busy":
+            return
+
+        if m.get("claimed_by") != data.get("claim_token"):
             return
 
         player = data["player"]
@@ -22,8 +27,10 @@ def register_socket_events(socketio):
 
         if player == m["player1"]:
             m["total1"] = total
-        else:
+        elif player == m["player2"]:
             m["total2"] = total
+        else:
+            return
 
         emit("match_update", m, broadcast=True)
 
@@ -35,47 +42,24 @@ def register_socket_events(socketio):
         turns = data.get("turns", 0)
 
         m = ACTIVE_MATCHES.get(match_id)
-        if not m:
+        if not m or m.get("status") != "busy":
             return
 
-        p1 = m["player1"]
-        p2 = m["player2"]
+        if m.get("claimed_by") != data.get("claim_token"):
+            return
 
         total1 = m.get("total1", 0)
         total2 = m.get("total2", 0)
 
-        game = m["game_type"]
-
-        if total1 > total2:
-            winner = p1
-        elif total2 > total1:
-            winner = p2
-        else:
-            winner = "draw"
-
-        m["status"] = "finished"
-        m["winner"] = winner
-
-        conn = get_db()
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-        avg1 = round(total1 / turns, 3) if turns else 0
-        avg2 = round(total2 / turns, 3) if turns else 0
-
-        conn.execute("""
-        INSERT INTO results
-        (match_id, player, opponent, total, game_type, ts_recorded,
-         points, result, avg, turns)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (match_id, p1, p2, total1, game, now, 0, winner, avg1, turns))
-
-        conn.execute("""
-        INSERT INTO results
-        (match_id, player, opponent, total, game_type, ts_recorded,
-         points, result, avg, turns)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (match_id, p2, p1, total2, game, now, 0, winner, avg2, turns))
-
-        conn.commit()
+        result = build_pending_result(m, {
+            "total1": total1,
+            "total2": total2,
+            "turns": turns,
+            "high_run1": data.get("high_run1", 0),
+            "high_run2": data.get("high_run2", 0)
+        })
+        set_pending_result(result)
+        m["status"] = "pending"
+        m["winner"] = result["winner"]
 
         emit("match_update", m, broadcast=True)

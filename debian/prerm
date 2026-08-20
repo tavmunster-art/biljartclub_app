@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+echo "BiljartClubApp wordt verwijderd..."
+
+exit 0

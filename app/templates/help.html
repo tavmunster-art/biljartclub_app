@@ -32,8 +32,43 @@ definitief opgeslagen in de database.
 </p>
 
 <div class="note">
+De coordinator is beveiligd met een wachtwoord. Tellers hebben geen coordinator-login
+nodig en kunnen alleen actieve wedstrijden bekijken, claimen, tellen en afsluiten.
+</div>
+
+<div class="note">
 Dataverkeer is zeer beperkt:
 ongeveer 2 MB bij 4 tellers gedurende 3 uur.
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h2>🔐 Toegang en verbinding</h2>
+
+<h3>Coordinator</h3>
+
+<ul>
+<li>Open de app op de coordinator-laptop</li>
+<li>Log in met het coordinator-wachtwoord</li>
+<li>Alleen de coordinator kan spelers, wedstrijden, instellingen, backups en resultaten beheren</li>
+</ul>
+
+<h3>Teller-laptop, telefoon of tablet</h3>
+
+<ul>
+<li>Start de app alleen op de coordinator-laptop</li>
+<li>Verbind alle apparaten met hetzelfde WiFi-netwerk</li>
+<li>Open op een teller-apparaat het adres dat de coordinator bij het starten toont</li>
+<li>Gebruik het LAN-adres, bijvoorbeeld <b>http://192.168.2.14:5000/teller</b></li>
+<li>Gebruik niet <b>localhost</b> of <b>127.0.0.1</b> op een teller-apparaat</li>
+</ul>
+
+<div class="note">
+Werkt het adres niet? Controleer of beide apparaten op hetzelfde gewone WiFi-netwerk
+zitten en niet op een gastnetwerk met apparaat-isolatie.
 </div>
 
 </div>
@@ -210,6 +245,12 @@ Bij verwijderen worden naam, resultaten en historie definitief verwijderd.
 </ul>
 </ul>
 
+</div>
+
+<div class="note">
+BiljartClubApp
+Versie 1.0.9
+Build: Linux Debian
 </div>
 
 

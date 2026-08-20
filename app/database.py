@@ -1,10 +1,21 @@
-import sqlite3
 import os
+import sys
+import sqlite3
+import pathlib
+import json
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+BASE_DIR = "/var/lib/biljartclub"
 
-# 🔥 database nu correct in instance/
-DB_PATH = os.path.join(BASE_DIR, "instance", "biljart.db")
+INSTANCE_DIR = os.path.join(BASE_DIR, "instance")
+
+os.makedirs(INSTANCE_DIR, exist_ok=True)
+
+DB_PATH = os.path.join(INSTANCE_DIR, "biljart.db")
+BACKUP_DIR = os.path.join(BASE_DIR, "backups")
+REPORT_DIR = os.path.join(BASE_DIR, "reports")
+
+os.makedirs(BACKUP_DIR, exist_ok=True)
+os.makedirs(REPORT_DIR, exist_ok=True)
 
 
 def get_db():
@@ -16,12 +27,40 @@ def get_db():
     return conn
 
 
+def save_pending_result(result):
+    conn = get_db()
+    conn.execute(
+        "INSERT OR REPLACE INTO pending_results (match_id, payload) VALUES (?, ?)",
+        (result["match_id"], json.dumps(result))
+    )
+    conn.commit()
+    conn.close()
+
+
+def load_pending_results():
+    conn = get_db()
+    rows = conn.execute(
+        "SELECT payload FROM pending_results"
+    ).fetchall()
+    conn.close()
+    return [json.loads(row["payload"]) for row in rows]
+
+
+def delete_pending_result(match_id):
+    conn = get_db()
+    conn.execute(
+        "DELETE FROM pending_results WHERE match_id=?",
+        (match_id,)
+    )
+    conn.commit()
+    conn.close()
+
+
 # =========================================
 # INIT DATABASE
 # =========================================
 def init_db():
 
-    os.makedirs(os.path.join(BASE_DIR, "instance"), exist_ok=True)
 
     conn = get_db()
 
@@ -49,7 +88,8 @@ def init_db():
         result TEXT,
         avg REAL,
         turns INTEGER,
-        start_avg REAL
+        start_avg REAL,
+        high_run INTEGER DEFAULT 0
     )
     """)
 
@@ -58,6 +98,13 @@ def init_db():
     CREATE TABLE IF NOT EXISTS settings (
         key TEXT PRIMARY KEY,
         value TEXT
+    )
+    """)
+
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS pending_results (
+        match_id TEXT PRIMARY KEY,
+        payload TEXT NOT NULL
     )
     """)
 

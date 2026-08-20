@@ -1,9 +1,40 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+my_venv/
+env/
+
+# Runtime data
 instance/
 backups/
 reports/
+*.db
+*.sqlite
+*.sqlite3
+coordinator.password
+session.secret
+
+# Debian build output
 build/
-dist/
-_internal/
-*.spec
+*.deb
+*.changes
+*.buildinfo
+
+# Local tooling and editor files
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Temporary files
+*.tmp
+*.log

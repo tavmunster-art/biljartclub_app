@@ -156,6 +156,12 @@ Max beurten:<br>
 <input id="turnsInput" type="number">
 <button onclick="saveTurns()">Opslaan</button>
 
+<h3>Coordinator-wachtwoord</h3>
+<input id="currentPassword" type="password" placeholder="Huidig wachtwoord"><br>
+<input id="newPassword" type="password" placeholder="Nieuw wachtwoord"><br>
+<input id="confirmPassword" type="password" placeholder="Herhaal nieuw wachtwoord"><br>
+<button onclick="changePassword()">Wachtwoord wijzigen</button>
+
 <hr>
 
 <a href="/help"><button>Gebruiksaanwijzing</button></a>
@@ -191,6 +197,11 @@ Max beurten:<br>
 
 <div>
 {{r.player1}} vs {{r.player2}}
+
+HS:
+{{r.high_run1}}
+-
+{{r.high_run2}}
 </div>
 
 <div style="margin-top:10px; font-size:20px; font-weight:bold;">
@@ -260,7 +271,9 @@ Bevestigen
 <h3>Handmatige invoer</h3>
 
 <input id="m_total1" type="number" placeholder="Caramboles speler 1"><br><br>
+<input id="high_run1" type="number" min="0" placeholder="Hoogste serie speler 1"><br><br>
 <input id="m_total2" type="number" placeholder="Caramboles speler 2"><br><br>
+<input id="high_run2" type="number" min="0" placeholder="Hoogste serie speler 2"><br><br>
 <input id="m_turns" type="number" placeholder="Aantal beurten"><br><br>
 
 <button onclick="saveManual()">Opslaan</button>

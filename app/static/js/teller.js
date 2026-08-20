@@ -4,6 +4,9 @@ let turns = [];
 let current1 = 0;
 let current2 = 0;
 
+let highRun1 = 0;
+let highRun2 = 0;
+
 const target1 = TARGET1;
 const target2 = TARGET2;
 
@@ -13,9 +16,18 @@ function add(player, value){
     if(player === 1){
         current1 = Math.max(0, current1 + value);
         document.getElementById("t1").innerText = total1 + current1;
+
+        if(current1 > highRun1){
+            highRun1 = current1;
+        }
     } else {
         current2 = Math.max(0, current2 + value);
         document.getElementById("t2").innerText = total2 + current2;
+
+        if(current2 > highRun2){
+            highRun2 = current2;
+        }
+
     }
 }
 
@@ -54,6 +66,10 @@ function updateUI(){
 
     document.getElementById("turns").innerText = turns.length;
 
+    // update high runs
+    document.getElementById("hr1").innerText = "HS: " + highRun1;
+    document.getElementById("hr2").innerText = "HS: " + highRun2;
+
     // kleur bij target
     document.getElementById("t1").style.color =
         total1 >= target1 ? "green" : "black";
@@ -78,6 +94,8 @@ function finish(){
             claim_token: localStorage.getItem("claim_token"),
             total1: total1,
             total2: total2,
+            high_run1: highRun1,
+            high_run2: highRun2,
             turns: turns.length
         })
     })

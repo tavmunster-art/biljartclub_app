@@ -1,40 +1,31 @@
 from flask import Blueprint, request
 import os
 import shutil
-import sys
 from datetime import datetime
 
-from app.database import get_db
+from app.database import (
+    BACKUP_DIR,
+    DB_PATH,
+    get_db
+)
+from app.auth import coordinator_required
+from app.routes.matches import has_active_matches
 
 backup_bp = Blueprint("backup", __name__)
 
-# =========================================
-# BASE DIRECTORY
-# =========================================
-
-# werkt voor source én pyinstaller exe
-if getattr(sys, 'frozen', False):
-    BASE_DIR = os.path.dirname(sys.executable)
-else:
-    BASE_DIR = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "..")
-    )
-
-# =========================================
-# PATHS
-# =========================================
-
-DB_FILE = os.path.join(BASE_DIR, "instance", "biljart.db")
-
-BACKUP_DIR = os.path.join(BASE_DIR, "backups")
+DB_FILE = DB_PATH
 
 # =========================================
 # CREATE BACKUP
 # =========================================
 @backup_bp.route("/backup/create", methods=["POST"])
+@coordinator_required
 def create_backup():
 
     try:
+
+        if has_active_matches():
+            return {"error": "backup niet toegestaan tijdens actieve wedstrijden"}, 409
 
         # map maken indien nodig
         os.makedirs(BACKUP_DIR, exist_ok=True)
@@ -72,6 +63,7 @@ def create_backup():
 # LIST BACKUPS
 # =========================================
 @backup_bp.route("/backup/list")
+@coordinator_required
 def list_backups():
 
     os.makedirs(BACKUP_DIR, exist_ok=True)
@@ -89,9 +81,13 @@ def list_backups():
 # RESTORE BACKUP
 # =========================================
 @backup_bp.route("/backup/restore", methods=["POST"])
+@coordinator_required
 def restore_backup():
 
     try:
+
+        if has_active_matches():
+            return {"error": "backup herstellen niet toegestaan tijdens actieve wedstrijden"}, 409
 
         file = request.json.get("file")
 
@@ -101,10 +97,10 @@ def restore_backup():
                 "error": "geen backup geselecteerd"
             }
 
-        backup_path = os.path.join(
-            BACKUP_DIR,
-            file
-        )
+        if os.path.basename(file) != file or not file.endswith(".db"):
+            return {"error": "ongeldig backupbestand"}
+
+        backup_path = os.path.join(BACKUP_DIR, file)
 
         if not os.path.exists(backup_path):
 
@@ -128,6 +124,7 @@ def restore_backup():
 # RESET RESULTS
 # =========================================
 @backup_bp.route("/backup/reset", methods=["POST"])
+@coordinator_required
 def reset_db():
 
     try:
