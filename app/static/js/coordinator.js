@@ -260,9 +260,20 @@ async function generateReport(){
 // SEASON
 async function closeSeason(){
 
-    if(!confirm("Seizoen afsluiten?")) return;
+    if(!confirm(
+        "Seizoen afsluiten? Eerst worden het seizoenrapport en een backup opgeslagen. " +
+        "Daarna worden alle resultaten gewist. Alleen spelersnamen en nieuwe moyennes " +
+        "blijven behouden. Resultaten zijn terug te halen via de backup."
+    )) return;
 
-    await fetch("/season/close", {method:"POST"});
+    const res = await fetch("/season/close", {method:"POST"});
+    const data = await res.json();
+
+    if(data.error){
+        alert(data.error);
+        return;
+    }
+
     location.reload();
 }
 

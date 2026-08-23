@@ -5,10 +5,12 @@ import tempfile
 from functools import wraps
 
 from flask import jsonify, redirect, request, session, url_for
+from app.database import BASE_DIR
 
 
-PASSWORD_FILE = "/var/lib/biljartclub/coordinator.password"
-SECRET_FILE = "/var/lib/biljartclub/session.secret"
+PASSWORD_FILE = os.path.join(BASE_DIR, "coordinator.password")
+SECRET_FILE = os.path.join(BASE_DIR, "session.secret")
+RUNTIME_SESSION_ID = secrets.token_urlsafe(32)
 
 
 def get_session_secret():
@@ -40,6 +42,10 @@ def verify_coordinator_password(password):
     return bool(configured) and hmac.compare_digest(password, configured)
 
 
+def get_runtime_session_id():
+    return RUNTIME_SESSION_ID
+
+
 def change_coordinator_password(password):
     password = password.strip()
     if len(password) < 8:
@@ -65,7 +71,10 @@ def change_coordinator_password(password):
 def coordinator_required(view):
     @wraps(view)
     def wrapped_view(*args, **kwargs):
-        if session.get("coordinator_authenticated"):
+        if (
+            session.get("coordinator_authenticated")
+            and session.get("runtime_session_id") == RUNTIME_SESSION_ID
+        ):
             return view(*args, **kwargs)
 
         if request.method == "GET":

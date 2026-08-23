@@ -24,12 +24,14 @@ from app.database import (
 from app.auth import (
     change_coordinator_password,
     coordinator_required,
+    get_runtime_session_id,
     verify_coordinator_password
 )
 
 from app.routes.matches import (
     ACTIVE_MATCHES,
-    PENDING_RESULTS
+    PENDING_RESULTS,
+    has_active_matches
 )
 
 from reportlab.platypus import (
@@ -129,9 +131,7 @@ def approve_match():
     finally:
         conn.close()
 
-    match = ACTIVE_MATCHES.get(match_id)
-    if match:
-        match["status"] = "finished"
+    ACTIVE_MATCHES.pop(match_id, None)
 
     PENDING_RESULTS.pop(match_id, None)
     delete_pending_result(match_id)
@@ -198,6 +198,7 @@ def login():
         password = request.form.get("password", "")
         if verify_coordinator_password(password):
             session["coordinator_authenticated"] = True
+            session["runtime_session_id"] = get_runtime_session_id()
             return redirect(request.form.get("next") or "/coordinator")
 
         return render_template("login.html", error="Onjuist wachtwoord"), 401
@@ -508,6 +509,11 @@ from reportlab.lib.styles import getSampleStyleSheet
 @main_bp.route("/season/close", methods=["POST"])
 @coordinator_required
 def close_season():
+
+    if has_active_matches():
+        return {
+            "error": "seizoen kan niet worden afgesloten tijdens actieve of wachtende wedstrijden"
+        }, 409
 
     conn = get_db()
 

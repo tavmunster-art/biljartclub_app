@@ -16,7 +16,7 @@ Lokale webapplicatie voor biljartverenigingen met Libre- en Bandwedstrijden, mob
 Installeer de Debian-package:
 
 ```bash
-sudo dpkg -i build/biljartclubapp_1.0.9_amd64.deb
+sudo dpkg -i build/biljartclubapp_1.0.14_amd64.deb
 ```
 
 Tijdens de installatie worden automatisch een coordinator-wachtwoord en een sessiesleutel aangemaakt. Het coordinator-wachtwoord wordt één keer in de terminal getoond:
@@ -93,17 +93,25 @@ Een match kan maar door één teller worden geclaimd. Een tellerresultaat blijft
 
 ## Backups en rapporten
 
-De vaste paden zijn:
+De gebruikersgegevens worden opgeslagen in de map van de ingelogde gebruiker:
 
 ```text
-/var/lib/biljartclub/instance/biljart.db
-/var/lib/biljartclub/backups/
-/var/lib/biljartclub/reports/
+~/BiljartClubApp/instance/biljart.db
+~/BiljartClubApp/backups/
+~/BiljartClubApp/reports/
 ```
+
+Ook het coordinator-wachtwoord en de sessiesleutel staan in `~/BiljartClubApp/`.
+De virtual environment van de Debian-package staat apart onder
+`/opt/biljartclub/venv`.
 
 Backups maken of herstellen is geblokkeerd zolang er actieve of pending matches bestaan. Rond wedstrijden eerst af en keur pending resultaten goed.
 
-Seizoen afsluiten maakt een PDF-rapport en backup, werkt startmoyennes bij en verwijdert de seizoensresultaten uit de database.
+Seizoen afsluiten maakt eerst een PDF-rapport en backup. Daarna worden de
+seizoensresultaten verwijderd. Alleen spelersnamen en de nieuwe startmoyennes
+blijven behouden. De nieuwe moyennes worden gebruikt voor doelcaramboles in het
+nieuwe seizoen. Resultaten kunnen worden teruggehaald door de backup te herstellen.
+Seizoen afsluiten is niet mogelijk zolang actieve of pending matches bestaan.
 
 ## Handmatig starten vanuit broncode
 
@@ -127,4 +135,4 @@ De app luistert op `0.0.0.0:5000`. Voor gebruik op het lokale netwerk moet de fi
 
 ## Gegevens en privacy
 
-De database, backups, rapporten, sessiesleutel en coordinator-wachtwoord staan buiten de applicatiecode onder `/var/lib/biljartclub`. Deze bestanden horen niet in een publieke GitHub-repository.
+De database, backups, rapporten, sessiesleutel en coordinator-wachtwoord staan buiten de applicatiecode onder `~/BiljartClubApp`. Deze bestanden horen niet in een publieke GitHub-repository.

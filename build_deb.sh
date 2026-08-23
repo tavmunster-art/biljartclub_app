@@ -14,7 +14,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 APPNAME="biljartclubapp"
 DISPLAY_NAME="BiljartClubApp"
-VERSION="1.0.9"
+VERSION="1.0.14"
 ARCH="amd64"
 
 BUILD_DIR="$SCRIPT_DIR/build"
@@ -101,7 +101,8 @@ cat > "$PKG_DIR/usr/bin/biljartclubapp" << 'EOF'
 #!/bin/bash
 
 APP_DIR="/opt/biljartclub"
-DATA_DIR="/var/lib/biljartclub"
+VENV_DIR="$APP_DIR/venv"
+DATA_DIR="$HOME/BiljartClubApp"
 
 mkdir -p "$DATA_DIR"
 mkdir -p "$DATA_DIR/instance"
@@ -110,7 +111,7 @@ mkdir -p "$DATA_DIR/backups"
 
 cd "$APP_DIR"
 
-"$DATA_DIR/venv/bin/python" run.py &
+"$VENV_DIR/bin/python" run.py &
 SERVER_PID=$!
 
 sleep 3
@@ -120,8 +121,6 @@ SERVER_IP=${SERVER_IP:-127.0.0.1}
 
 echo "BiljartClubApp draait op: http://${SERVER_IP}:5000"
 echo "Open op teller-laptops: http://${SERVER_IP}:5000/teller"
-
-xdg-open "http://${SERVER_IP}:5000/coordinator" >/dev/null 2>&1
 
 wait $SERVER_PID
 EOF
@@ -139,7 +138,11 @@ cat > "$PKG_DIR/DEBIAN/postinst" << 'EOF'
 set -e
 
 APP_DIR="/opt/biljartclub"
-DATA_DIR="/var/lib/biljartclub"
+VENV_DIR="$APP_DIR/venv"
+USER_NAME=${SUDO_USER:-$(logname 2>/dev/null)}
+USER_HOME=$(getent passwd "$USER_NAME" | cut -d: -f6)
+USER_HOME=${USER_HOME:-/root}
+DATA_DIR="$USER_HOME/BiljartClubApp"
 
 mkdir -p "$DATA_DIR"
 mkdir -p "$DATA_DIR/instance"
@@ -156,20 +159,16 @@ if [ ! -s "$DATA_DIR/session.secret" ]; then
     python3 -c 'import secrets; print(secrets.token_hex(32))' > "$DATA_DIR/session.secret"
 fi
 
-USER_NAME=${SUDO_USER:-$(logname 2>/dev/null)}
-
 if [ -n "$USER_NAME" ]; then
     chown -R "$USER_NAME:$USER_NAME" "$DATA_DIR"
 fi
 
-chmod -R 755 "$DATA_DIR"
+chmod 700 "$DATA_DIR" "$DATA_DIR/instance" "$DATA_DIR/reports" "$DATA_DIR/backups"
 
-chmod -R 755 "$DATA_DIR"
+python3 -m venv "$VENV_DIR"
 
-python3 -m venv "$DATA_DIR/venv"
-
-"$DATA_DIR/venv/bin/pip" install --upgrade pip
-"$DATA_DIR/venv/bin/pip" install -r "$APP_DIR/requirements.txt"
+"$VENV_DIR/bin/pip" install --upgrade pip
+"$VENV_DIR/bin/pip" install -r "$APP_DIR/requirements.txt"
 
 chmod 600 "$DATA_DIR/coordinator.password" "$DATA_DIR/session.secret"
 

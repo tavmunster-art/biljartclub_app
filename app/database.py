@@ -3,8 +3,12 @@ import sys
 import sqlite3
 import pathlib
 import json
+from pathlib import Path
 
-BASE_DIR = "/var/lib/biljartclub"
+BASE_DIR = os.environ.get(
+    "BILJART_DATA_DIR",
+    os.path.join(Path.home(), "BiljartClubApp")
+)
 
 INSTANCE_DIR = os.path.join(BASE_DIR, "instance")
 
