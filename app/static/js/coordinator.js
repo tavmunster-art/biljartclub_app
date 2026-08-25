@@ -48,6 +48,58 @@ async function approve(id){
     location.reload();
 }
 
+let correctionMatchId = null;
+
+function correctPending(id){
+    correctionMatchId = id;
+
+    for(const field of ["c_total1", "c_high_run1", "c_total2", "c_high_run2", "c_turns"]){
+        document.getElementById(field).value = "";
+    }
+
+    document.getElementById("correctionModal").style.display = "block";
+}
+
+function closeCorrection(){
+    document.getElementById("correctionModal").style.display = "none";
+    correctionMatchId = null;
+}
+
+async function saveCorrection(){
+    const total1 = parseInt(document.getElementById("c_total1").value);
+    const highRun1 = parseInt(document.getElementById("c_high_run1").value) || 0;
+    const total2 = parseInt(document.getElementById("c_total2").value);
+    const highRun2 = parseInt(document.getElementById("c_high_run2").value) || 0;
+    const turns = parseInt(document.getElementById("c_turns").value);
+
+    if([total1, total2, turns].some(Number.isNaN) || turns < 1){
+        alert("Vul geldige scores en minimaal 1 beurt in");
+        return;
+    }
+
+    const res = await fetch("/match/correct", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            match_id: correctionMatchId,
+            total1,
+            total2,
+            turns,
+            high_run1: highRun1,
+            high_run2: highRun2,
+            manual_date: document.getElementById("manualDate").value
+        })
+    });
+    const data = await res.json();
+
+    if(!res.ok || data.error){
+        alert(data.error || "Corrigeren mislukt");
+        return;
+    }
+
+    location.reload();
+}
+
 // DELETE
 async function deletePlayer(name){
 

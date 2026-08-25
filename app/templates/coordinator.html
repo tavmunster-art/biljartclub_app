@@ -251,6 +251,10 @@ HS:
 Bevestigen
 </button>
 
+<button onclick="correctPending('{{r.match_id}}')">
+Corrigeren
+</button>
+
 </div>
 {% endfor %}
 </div>
@@ -290,6 +294,24 @@ Bevestigen
 </div>
 {% endfor %}
 
+</div>
+
+<div id="correctionModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+
+<div style="background:white; width:300px; margin:100px auto; padding:20px; border-radius:10px;">
+
+<h3>Resultaat corrigeren</h3>
+
+<input id="c_total1" type="number" min="0" step="1" placeholder="Caramboles speler 1"><br><br>
+<input id="c_high_run1" type="number" min="0" step="1" placeholder="Hoogste serie speler 1"><br><br>
+<input id="c_total2" type="number" min="0" step="1" placeholder="Caramboles speler 2"><br><br>
+<input id="c_high_run2" type="number" min="0" step="1" placeholder="Hoogste serie speler 2"><br><br>
+<input id="c_turns" type="number" min="1" step="1" placeholder="Aantal beurten"><br><br>
+
+<button onclick="saveCorrection()">Opslaan correctie</button>
+<button onclick="closeCorrection()">Annuleren</button>
+
+</div>
 </div>
 
 

@@ -379,6 +379,48 @@ def manual_result():
 
     return {"ok": True}
 
+
+@matches_bp.route("/match/correct", methods=["POST"])
+@coordinator_required
+def correct_pending_result():
+    data = request.json or {}
+
+    validation_error = validate_non_negative_integers(
+        data,
+        ("total1", "total2", "turns", "high_run1", "high_run2")
+    )
+    if validation_error:
+        return {"error": validation_error}, 400
+
+    match_id = data.get("match_id")
+    pending = PENDING_RESULTS.get(match_id)
+
+    if not pending:
+        return {"error": "resultaat niet gevonden"}, 404
+
+    turns = data.get("turns", 0)
+    if turns < 1:
+        return {"error": "beurten moet minimaal 1 zijn"}, 400
+
+    corrected = build_pending_result(
+        {
+            "id": match_id,
+            "player1": pending["player1"],
+            "player2": pending["player2"],
+            "game_type": pending["game_type"],
+            "start_avg1": pending["start1"],
+            "start_avg2": pending["start2"]
+        },
+        data
+    )
+    corrected["recorded_at"] = data.get(
+        "manual_date",
+        pending.get("recorded_at")
+    )
+
+    set_pending_result(corrected)
+    return {"ok": True, "result": corrected}
+
 # =============================
 # CLAIM MATCH
 # =============================
