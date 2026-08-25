@@ -135,14 +135,22 @@ biljartclub_app/
 │   ├── database.py
 │   └── __init__.py
 │
-├── backups/
-├── reports/
-├── instance/
-│   └── biljart.db
 │
 ├── run.py
 ├── requirements.txt
 └── README.md
+
+Program folder/
+│
+└── biljartclub_app/
+        └── instance/
+                └── biljart.db
+
+C:\Users\user\BiljartClup/
+        ├── Backups/
+        └── Rapporten/
+
+
 ````
 
 ---
@@ -178,13 +186,13 @@ Start the server:
 python run.py
 ```
 
-By default the app runs locally on:
+By default the app listens for devices on the local network and the coordinator browser opens locally at:
 
 ```text
 http://127.0.0.1:5000
 ```
 
-If you want to expose the app on the local network for phones/tablets, start it with:
+To explicitly choose the bind address, start it with:
 
 ```bash
 set APP_HOST=0.0.0.0
@@ -272,10 +280,15 @@ The application uses SQLite.
 Default database location:
 
 ```text
-instance/biljart.db
+./instance/biljart.db
 ```
 
-Backups and reports are stored separately.
+Backups and reports are stored in:
+
+```text
+C:\Users\user\BiljartClup\Backups
+C:\Users\user\BiljartClup\Rapporten
+```
 
 ---
 

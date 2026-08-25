@@ -86,23 +86,29 @@ function finish(){
     if(finished) return;
     finished = true;
 
+    const hasCurrentTurn = current1 !== 0 || current2 !== 0;
+    const effectiveTotal1 = total1 + current1;
+    const effectiveTotal2 = total2 + current2;
+    const effectiveTurns = turns.length + (hasCurrentTurn ? 1 : 0);
+
     fetch("/match/finish", {
         method:"POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({
             match_id: MATCH_ID,
             claim_token: localStorage.getItem("claim_token"),
-            total1: total1,
-            total2: total2,
+            total1: effectiveTotal1,
+            total2: effectiveTotal2,
             high_run1: highRun1,
             high_run2: highRun2,
-            turns: turns.length
+            turns: effectiveTurns
         })
     })
     .then(res => res.json())
     .then(data => {
 
         if(data.error){
+            finished = false;
             alert(data.error);
             return;
         }
@@ -110,6 +116,10 @@ function finish(){
         alert("Match opgeslagen");
         localStorage.removeItem("claim_token");
         window.location.href = "/teller";
+    })
+    .catch(() => {
+        finished = false;
+        alert("Opslaan mislukt");
     });
 }
 
@@ -119,7 +129,7 @@ function addSeries(player){
     let input = player === 1 ? "s1" : "s2";
     let val = parseInt(document.getElementById(input).value);
 
-    if(isNaN(val) || val <= 0){
+    if(isNaN(val) || val < 0){
         alert("Ongeldige serie");
         return;
     }

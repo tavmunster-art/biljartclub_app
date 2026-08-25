@@ -1,25 +1,14 @@
 import os
-import sys
 import sqlite3
-import pathlib
 import json
-from pathlib import Path
+from flask import g, has_app_context
 
-BASE_DIR = os.environ.get(
-    "BILJART_DATA_DIR",
-    os.path.join(Path.home(), "BiljartClubApp")
+from app.paths import (
+    BACKUP_DIR,
+    DB_PATH,
+    REPORT_DIR,
+    INSTANCE_DIR
 )
-
-INSTANCE_DIR = os.path.join(BASE_DIR, "instance")
-
-os.makedirs(INSTANCE_DIR, exist_ok=True)
-
-DB_PATH = os.path.join(INSTANCE_DIR, "biljart.db")
-BACKUP_DIR = os.path.join(BASE_DIR, "backups")
-REPORT_DIR = os.path.join(BASE_DIR, "reports")
-
-os.makedirs(BACKUP_DIR, exist_ok=True)
-os.makedirs(REPORT_DIR, exist_ok=True)
 
 
 def get_db():
@@ -28,7 +17,18 @@ def get_db():
 
     conn.row_factory = sqlite3.Row
 
+    if has_app_context():
+        g.setdefault("_db_connections", []).append(conn)
+
     return conn
+
+
+def close_db_connections(exception=None):
+    for conn in g.pop("_db_connections", []):
+        try:
+            conn.close()
+        except sqlite3.ProgrammingError:
+            pass
 
 
 def save_pending_result(result):

@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+import math
 from app.database import (
     get_db,
     load_pending_results,
@@ -16,6 +17,20 @@ ACTIVE_MATCHES = {}
 
 PENDING_RESULTS = {}
 MATCH_LOCK = threading.Lock()
+
+
+def validate_non_negative_integers(data, fields):
+    for field in fields:
+        value = data.get(field, 0)
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not math.isfinite(value)
+            or value < 0
+            or value != int(value)
+        ):
+            return f"{field} moet 0 of een positief geheel getal zijn"
+    return None
 
 
 def has_active_matches():
@@ -291,6 +306,13 @@ def manual_result():
 
     data = request.json
 
+    validation_error = validate_non_negative_integers(
+        data,
+        ("total1", "total2", "turns", "high_run1", "high_run2")
+    )
+    if validation_error:
+        return {"error": validation_error}, 400
+
     match_id = data["match_id"]
 
     m = ACTIVE_MATCHES.get(match_id)
@@ -382,8 +404,6 @@ def claim_match():
         "token": claim_token
     }
 
-    return {"ok": True}
-
 
 # =============================
 # FINISH MATCH
@@ -391,6 +411,14 @@ def claim_match():
 @matches_bp.route("/match/finish", methods=["POST"])
 def finish_match():
     data = request.json
+
+    validation_error = validate_non_negative_integers(
+        data,
+        ("total1", "total2", "turns", "high_run1", "high_run2")
+    )
+    if validation_error:
+        return {"error": validation_error}, 400
+
     match_id = data["match_id"]
 
     m = ACTIVE_MATCHES.get(match_id)

@@ -4,14 +4,17 @@ import socket
 import subprocess
 import threading
 import sys
+import math
 from datetime import datetime
+from urllib.parse import urlsplit
 
 from flask import (
     Blueprint,
     render_template,
     request,
     redirect,
-    session
+    session,
+    send_from_directory
 )
 
 from app.database import (
@@ -24,7 +27,6 @@ from app.database import (
 from app.auth import (
     change_coordinator_password,
     coordinator_required,
-    get_runtime_session_id,
     verify_coordinator_password
 )
 
@@ -62,6 +64,29 @@ def set_setting(conn, key, value):
         (key, str(value))
     )
     conn.commit()
+
+
+def parse_non_negative_average(value):
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError):
+        return None
+
+    if not math.isfinite(parsed) or parsed < 0:
+        return None
+
+    return parsed
+
+
+def get_safe_login_redirect(next_url):
+    if not next_url or not next_url.startswith("/") or next_url.startswith("//"):
+        return "/coordinator"
+
+    parsed_url = urlsplit(next_url)
+    if parsed_url.scheme or parsed_url.netloc or "\\" in next_url:
+        return "/coordinator"
+
+    return next_url
 
 @main_bp.route("/match/approve", methods=["POST"])
 @coordinator_required
@@ -198,8 +223,8 @@ def login():
         password = request.form.get("password", "")
         if verify_coordinator_password(password):
             session["coordinator_authenticated"] = True
-            session["runtime_session_id"] = get_runtime_session_id()
-            return redirect(request.form.get("next") or "/coordinator")
+            next_url = get_safe_login_redirect(request.form.get("next"))
+            return redirect(next_url)
 
         return render_template("login.html", error="Onjuist wachtwoord"), 401
 
@@ -259,6 +284,8 @@ def coordinator():
 
         players.append({
             "name": r["name"],
+            "avg_libre": round(avg_libre, 3),
+            "avg_band": round(avg_band, 3),
             "target_libre": target_libre,
             "target_band": target_band
         })
@@ -291,6 +318,15 @@ def get_settings():
 def set_settings():
     data = request.json
     turns = data.get("turns", 20)
+
+    if (
+        isinstance(turns, bool)
+        or not isinstance(turns, (int, float))
+        or not math.isfinite(turns)
+        or turns < 0
+        or turns != int(turns)
+    ):
+        return {"error": "beurten moet 0 of een positief geheel getal zijn"}, 400
 
     conn = get_db()
     set_setting(conn, "max_turns", turns)
@@ -430,15 +466,11 @@ def add_player():
 
     if name:
 
-        try:
-            avg_libre = float(avg_libre)
-        except:
-            avg_libre = 0.5
+        avg_libre = parse_non_negative_average(avg_libre)
+        avg_band = parse_non_negative_average(avg_band)
 
-        try:
-            avg_band = float(avg_band)
-        except:
-            avg_band = 0.5
+        if avg_libre is None or avg_band is None:
+            return {"error": "moyenne moet 0 of een positief getal zijn"}, 400
 
         conn = get_db()
 
@@ -470,6 +502,39 @@ def delete_player():
     conn.execute("DELETE FROM players WHERE name=?", (name,))
 
     conn.commit()
+
+    return {"ok": True}
+
+
+@main_bp.route("/players/averages", methods=["POST"])
+@coordinator_required
+def update_player_averages():
+
+    data = request.json or {}
+    name = data.get("name")
+
+    if not name:
+        return {"error": "geen speler"}, 400
+
+    avg_libre = parse_non_negative_average(data.get("avg_libre"))
+    avg_band = parse_non_negative_average(data.get("avg_band"))
+
+    if avg_libre is None or avg_band is None:
+        return {"error": "moyenne moet 0 of een positief getal zijn"}, 400
+
+    conn = get_db()
+    updated = conn.execute(
+        """
+        UPDATE players
+        SET avg_libre=?, avg_band=?
+        WHERE name=?
+        """,
+        (avg_libre, avg_band, name)
+    )
+    conn.commit()
+
+    if updated.rowcount == 0:
+        return {"error": "speler niet gevonden"}, 404
 
     return {"ok": True}
 
@@ -819,7 +884,30 @@ def generate_report():
 
     doc.build(elements)
 
-    return {"ok": True}
+    return {"ok": True, "file": os.path.basename(report_path)}
+
+
+@main_bp.route("/reports/list")
+@coordinator_required
+def list_reports():
+    os.makedirs(REPORT_DIR, exist_ok=True)
+    files = sorted(
+        (
+            filename for filename in os.listdir(REPORT_DIR)
+            if filename.lower().endswith(".pdf")
+        ),
+        reverse=True
+    )
+    return {"files": files[:1]}
+
+
+@main_bp.route("/reports/<path:filename>")
+@coordinator_required
+def download_report(filename):
+    if os.path.basename(filename) != filename or not filename.lower().endswith(".pdf"):
+        return {"error": "ongeldig rapportbestand"}, 400
+
+    return send_from_directory(REPORT_DIR, filename, as_attachment=True)
 
 # =============
 # HELP PAGINA

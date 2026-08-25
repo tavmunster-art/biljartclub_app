@@ -62,6 +62,89 @@ async function deletePlayer(name){
     location.reload();
 }
 
+
+function selectUsageMode(mode){
+    const newCheckbox = document.getElementById("modeNewPlayer");
+    const editCheckbox = document.getElementById("modeEditMoyenne");
+    const newPanel = document.getElementById("newPlayerPanel");
+    const editPanel = document.getElementById("editMoyennePanel");
+
+    if(!newCheckbox || !editCheckbox || !newPanel || !editPanel){
+        return;
+    }
+
+    if(mode === "edit" && editCheckbox.checked){
+        newCheckbox.checked = false;
+    }
+
+    if(mode === "new" && newCheckbox.checked){
+        editCheckbox.checked = false;
+    }
+
+    newPanel.style.display = newCheckbox.checked ? "block" : "none";
+    editPanel.style.display = editCheckbox.checked ? "block" : "none";
+
+    if(editCheckbox.checked){
+        fillAverageInputs();
+    }
+}
+
+
+function fillAverageInputs(){
+    const select = document.getElementById("avgPlayerSelect");
+    const libreInput = document.getElementById("editAvgLibre");
+    const bandInput = document.getElementById("editAvgBand");
+
+    if(!select || !libreInput || !bandInput || select.selectedIndex < 0){
+        return;
+    }
+
+    const selected = select.options[select.selectedIndex];
+    libreInput.value = selected.dataset.libre || "";
+    bandInput.value = selected.dataset.band || "";
+}
+
+
+async function updatePlayerAverages(){
+    const select = document.getElementById("avgPlayerSelect");
+    const libreInput = document.getElementById("editAvgLibre");
+    const bandInput = document.getElementById("editAvgBand");
+
+    if(!select || select.selectedIndex < 0){
+        alert("Geen speler geselecteerd");
+        return;
+    }
+
+    const avgLibre = parseFloat(libreInput.value);
+    const avgBand = parseFloat(bandInput.value);
+
+    if(Number.isNaN(avgLibre) || Number.isNaN(avgBand) || avgLibre < 0 || avgBand < 0){
+        alert("Moyenne moet 0 of een positief getal zijn");
+        return;
+    }
+
+    const playerName = select.value;
+    const res = await fetch("/players/averages", {
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            name: playerName,
+            avg_libre: avgLibre,
+            avg_band: avgBand
+        })
+    });
+
+    const data = await res.json();
+
+    if(!res.ok || data.error){
+        alert(data.error || "Moyenne wijzigen mislukt");
+        return;
+    }
+
+    alert("Moyennes opgeslagen");
+    location.reload();
+}
+
 // MANUAL
 let currentMatchId = null;
 
@@ -169,7 +252,12 @@ async function loadTurns(){
 
 async function saveTurns(){
 
-    const turns = parseInt(document.getElementById("turnsInput").value) || 20;
+    const turns = parseInt(document.getElementById("turnsInput").value);
+
+    if(isNaN(turns) || turns < 0){
+        alert("Beurten moet 0 of een positief geheel getal zijn");
+        return;
+    }
 
     await fetch("/settings/set", {
         method:"POST",
@@ -238,7 +326,9 @@ async function restoreBackup(){
     const res = await fetch("/backup/restore", {
         method:"POST",
         headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({file: backupList.value})
+        body: JSON.stringify({
+            file: backupList.value
+        })
     });
 
     const data = await res.json();
@@ -248,13 +338,42 @@ async function restoreBackup(){
         return;
     }
 
+    alert(
+        "Backup hersteld. Moyennes zijn opnieuw afgeleid uit ranking. " +
+        "Controleer of wijzig ze bij 'Moyenne wijzigen'."
+    );
+
     location.reload();
 }
 
 // REPORT
 async function generateReport(){
-    await fetch("/report/generate", {method:"POST"});
+    const res = await fetch("/report/generate", {method:"POST"});
+    const data = await res.json();
+
+    if(!res.ok || data.error){
+        alert(data.error || "Rapport maken mislukt");
+        return;
+    }
+
+    await loadReports();
     alert("Rapport gemaakt");
+}
+
+async function loadReports(){
+    const res = await fetch("/reports/list");
+    const data = await res.json();
+    const reportList = document.getElementById("reportList");
+
+    reportList.innerHTML = "";
+    data.files.forEach(file => {
+        const link = document.createElement("a");
+        link.href = "/reports/" + encodeURIComponent(file);
+        link.textContent = file;
+        link.target = "_blank";
+        reportList.appendChild(link);
+        reportList.appendChild(document.createElement("br"));
+    });
 }
 
 // SEASON
@@ -287,6 +406,8 @@ window.onload = function(){
     loadTurns();
 
     loadBackups();
+    loadReports();
+    selectUsageMode("new");
 
     // ==============================
     // MELDINGEN

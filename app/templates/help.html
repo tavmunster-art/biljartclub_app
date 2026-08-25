@@ -92,8 +92,17 @@ zitten en niet op een gastnetwerk met apparaat-isolatie.
 <h3>Spelers toevoegen</h3>
 
 <ul>
-<li>Nieuwe spelers kunnen direct worden toegevoegd</li>
+<li>Ga naar <b>Gebruik</b> en kies bewust de checkbox <b>Nieuwe speler invoeren</b></li>
+<li>Daarna verschijnt het invoerveld voor een nieuwe speler</li>
 <li>Libre- en bandmoyenne worden meteen opgeslagen</li>
+</ul>
+
+<h3>Moyennes wijzigen</h3>
+
+<ul>
+<li>Ga naar <b>Gebruik</b> en kies bewust de checkbox <b>Moyenne wijzigen</b></li>
+<li>Selecteer de speler en pas Libre/Band moyenne handmatig aan</li>
+<li>Gebruik dit vooral na backup-herstel als doelcaramboles niet overeenkomen met de gewenste startsituatie</li>
 </ul>
 
 <h3>Spelers verwijderen</h3>
@@ -151,15 +160,6 @@ Bij verwijderen worden naam, resultaten en historie definitief verwijderd.
 <li>Na bevestiging worden resultaten definitief opgeslagen</li>
 </ul>
 
-<h3>Coordinator-wachtwoord wijzigen</h3>
-
-<ul>
-<li>Vul het huidige wachtwoord in</li>
-<li>Vul het nieuwe wachtwoord tweemaal in</li>
-<li>Gebruik minimaal 8 tekens</li>
-<li>Na een wijziging blijft de huidige sessie actief</li>
-</ul>
-
 <h3>Instellingen</h3>
 
 <ul>
@@ -180,16 +180,9 @@ Bij verwijderen worden naam, resultaten en historie definitief verwijderd.
 <ul>
 <li>Maak backups van de database</li>
 <li>Herstel eerdere backups</li>
-<li>Backups en herstel zijn niet toegestaan tijdens actieve of wachtende wedstrijden</li>
-<li>De database staat in <b>~/BiljartClubApp/instance/</b></li>
-<li>Backups staan in <b>~/BiljartClubApp/backups/</b></li>
-<li>Rapporten staan in <b>~/BiljartClubApp/reports/</b></li>
+<li>Na herstel worden moyennes opnieuw afgeleid op basis van ranking-gegevens uit de herstelde database</li>
+<li>Wil je andere startmoyennes gebruiken, pas die daarna handmatig aan via <b>Gebruik → Moyenne wijzigen</b></li>
 </ul>
-
-<div class="note">
-Start de app opnieuw nadat het coordinator-wachtwoord is gewijzigd. Daarna wordt
-opnieuw om het wachtwoord gevraagd.
-</div>
 
 <h3>Seizoen afsluiten</h3>
 
@@ -197,8 +190,8 @@ opnieuw om het wachtwoord gevraagd.
 <li>De coordinator bevestigt eerst de waarschuwing</li>
 <li>De database wordt eerst opgeslagen in een PDF-rapport en een backup</li>
 <li>Daarna worden de seizoensresultaten uit de database verwijderd</li>
-<li>Alleen de spelersnamen en de voor het nieuwe seizoen berekende moyennes blijven behouden</li>
-<li>De nieuwe moyennes worden gebruikt voor de doelcaramboles van nieuwe matches</li>
+<li>Alleen spelersnamen en de nieuwe moyennes blijven behouden</li>
+<li>De nieuwe moyennes worden gebruikt voor doelcaramboles in het nieuwe seizoen</li>
 <li>Resultaten zijn terug te halen door de backup te herstellen</li>
 <li>Seizoen afsluiten kan niet zolang actieve of wachtende wedstrijden bestaan</li>
 </ul>
@@ -275,7 +268,7 @@ Nieuwe doelcaramboles worden pas na de seizoenafsluiting berekend met de nieuwe 
 
 <div class="note">
 BiljartClubApp
-Versie 1.0.13
+Versie 1.0.9
 Build: Linux Debian
 </div>
 

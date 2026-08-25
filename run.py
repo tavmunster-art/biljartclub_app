@@ -1,5 +1,6 @@
 from app import create_app
 from app.sockets.events import socketio
+import os
 import webbrowser
 import threading
 
@@ -13,7 +14,7 @@ threading.Timer(1, open_browser).start()
 if __name__ == "__main__":
     socketio.run(
     app,
-    host="0.0.0.0",
+    host=os.environ.get("APP_HOST", "0.0.0.0"),
     port=5000,
     debug=False,
     allow_unsafe_werkzeug=True
