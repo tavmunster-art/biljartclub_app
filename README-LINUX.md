@@ -13,7 +13,7 @@ Lokale webapplicatie voor biljartverenigingen met Libre- en Bandwedstrijden, mob
 
 ## Installatie
 
-Installeer de Debian-package:
+Installeer het Debian-pakket:
 
 ```bash
 sudo dpkg -i build/biljartclubapp_1.0.14_amd64.deb
@@ -96,13 +96,13 @@ Een match kan maar door één teller worden geclaimd. Een tellerresultaat blijft
 De gebruikersgegevens worden opgeslagen in de map van de ingelogde gebruiker:
 
 ```text
-~/BiljartClubApp/instance/biljart.db
-~/BiljartClubApp/backups/
-~/BiljartClubApp/reports/
+~/BiljartClup/instance/biljart.db
+~/BiljartClup/Backups/
+~/BiljartClup/Rapporten/
 ```
 
-Ook het coordinator-wachtwoord en de sessiesleutel staan in `~/BiljartClubApp/`.
-De virtual environment van de Debian-package staat apart onder
+Ook het coordinator-wachtwoord en de sessiesleutel staan in `~/BiljartClup/`.
+De virtual environment van het Debian-pakket staat apart onder
 `/opt/biljartclub/venv`.
 
 Backups maken of herstellen is geblokkeerd zolang er actieve of pending matches bestaan. Rond wedstrijden eerst af en keur pending resultaten goed.
@@ -135,4 +135,4 @@ De app luistert op `0.0.0.0:5000`. Voor gebruik op het lokale netwerk moet de fi
 
 ## Gegevens en privacy
 
-De database, backups, rapporten, sessiesleutel en coordinator-wachtwoord staan buiten de applicatiecode onder `~/BiljartClubApp`. Deze bestanden horen niet in een publieke GitHub-repository.
+De database, backups, rapporten, sessiesleutel en coordinator-wachtwoord staan buiten de applicatiecode onder `~/BiljartClup`. Deze bestanden horen niet in een publieke GitHub-repository.

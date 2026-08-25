@@ -68,7 +68,7 @@ This project provides a lightweight but powerful alternative specifically tailor
 
 Advantages include:
 
-- Easy setup without internet dependency
+- No internet connection required while running the app
 - Works on phones and tablets
 - Minimal network traffic
 - Centralized control by the coordinator
@@ -95,14 +95,14 @@ The application is intentionally designed to remain simple enough for non-techni
 # Project Structure
 
 ```text
-biljartclub_app/
+Packaging/
 │
 ├── app/
 │   ├── routes/
 │   │   ├── main.py
 │   │   ├── matches.py
 │   │   ├── backup.py
-│   │   └── reports.py
+│   │   └── __init__.py
 │   │
 │   ├── templates/
 │   │   ├── coordinator.html
@@ -115,19 +115,20 @@ biljartclub_app/
 │   │
 │   ├── static/
 │   │   ├── css/
-│   │   │   ├── common.css
 │   │   │   ├── coordinator.css
-│   │   │   ├── teller.css
 │   │   │   ├── dashboard.css
+│   │   │   ├── history.css
 │   │   │   ├── help.css
-│   │   │   └── tables.css
+│   │   │   ├── ranking.css
+│   │   │   └── teller.css
 │   │   │
 │   │   └── js/
 │   │       ├── coordinator.js
-│   │       ├── teller.js
-│   │       ├── teller_list.js
 │   │       ├── dashboard.js
-│   │       └── common.js
+│   │       ├── history.js
+│   │       ├── ranking.js
+│   │       ├── teller.js
+│   │       └── teller_list.js
 │   │
 │   ├── sockets/
 │   │   └── events.py
@@ -140,18 +141,15 @@ biljartclub_app/
 ├── requirements.txt
 └── README.md
 
-Program folder/
-│
-└── biljartclub_app/
-        └── instance/
-                └── biljart.db
+```
 
-C:\Users\user\BiljartClup/
-        ├── Backups/
-        └── Rapporten/
+The application database is stored in `instance/biljart.db` in source mode.
+Backups, reports and authentication files are stored in the user's data folder:
 
-
-````
+```text
+Linux/macOS: ~/BiljartClup/
+Windows:     %USERPROFILE%\BiljartClup\
+```
 
 ---
 
@@ -162,6 +160,7 @@ C:\Users\user\BiljartClup/
 * Python 3.11+
 * Windows, Linux or macOS
 * Devices connected to the same local network
+* Internet access is only needed to install the Python dependencies
 
 ---
 
@@ -177,6 +176,8 @@ cd biljartclub_app
 Install dependencies:
 
 ```bash
+python -m venv .venv
+. .venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -186,13 +187,13 @@ Start the server:
 python run.py
 ```
 
-By default the app listens for devices on the local network and the coordinator browser opens locally at:
+The server listens on all network interfaces by default, and the coordinator browser opens locally at:
 
 ```text
 http://127.0.0.1:5000
 ```
 
-To explicitly choose the bind address, start it with:
+To explicitly choose the bind address on Windows, start it with:
 
 ```bash
 set APP_HOST=0.0.0.0
@@ -206,7 +207,7 @@ $env:APP_HOST = "0.0.0.0"
 python run.py
 ```
 
-Then open the app from another device using the laptop's hotspot IP address, for example:
+Then open the app from another device using the server laptop's LAN or hotspot IP address, for example:
 
 ```text
 http://192.168.43.1:5000
@@ -283,11 +284,11 @@ Default database location:
 ./instance/biljart.db
 ```
 
-Backups and reports are stored in:
+Backups, reports and authentication files are stored in the current user's data folder:
 
 ```text
-C:\Users\user\BiljartClup\Backups
-C:\Users\user\BiljartClup\Rapporten
+Linux/macOS: ~/BiljartClup/
+Windows:     %USERPROFILE%\BiljartClup\
 ```
 
 ---
