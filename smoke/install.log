@@ -1,0 +1,28 @@
+﻿2026-08-24 14:21:33.025   Log opened. (Time zone: UTC-07:00)
+2026-08-24 14:21:33.025   Setup version: Inno Setup version 6.7.3
+2026-08-24 14:21:33.025   Original Setup EXE: C:\Users\user\Project\Biljart\biljartclub_app\installer\BiljartClubSetup.exe
+2026-08-24 14:21:33.025   Setup command line: /SL5="$207E6,16322711,893952,C:\Users\user\Project\Biljart\biljartclub_app\installer\BiljartClubSetup.exe" /SPAWNWND=$1603FE /FIRSTWND=$90780 /SP- /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /LOG=smoke\install.log /DIR=\ C:\Users\user\Project\Biljart\biljartclub_app\smoke\installed\BiljartClubApp\
+2026-08-24 14:21:33.025   Compatibility mode: Yes (Installer)
+2026-08-24 14:21:33.025   Windows version: 10.0.22000
+2026-08-24 14:21:33.026   Windows architecture: x64 (64-bit)
+2026-08-24 14:21:33.026   Machine types supported by system: x86 x64
+2026-08-24 14:21:33.026   User privileges: Administrative
+2026-08-24 14:21:33.027   Administrative install mode: Yes
+2026-08-24 14:21:33.027   Install mode root key: HKEY_LOCAL_MACHINE
+2026-08-24 14:21:33.027   64-bit install mode: No
+2026-08-24 14:21:33.027   RedirectionGuard status for current process: Enabled in enforcing mode
+2026-08-24 14:21:33.034   Created protected temporary directory: C:\Users\user\AppData\Local\Temp\is-TKEBVH0OUH.tmp
+2026-08-24 14:21:33.132   Found 8 files to register with RestartManager.
+2026-08-24 14:21:33.132   Calling RestartManager's RmGetList.
+2026-08-24 14:21:33.137   RmGetList finished successfully.
+2026-08-24 14:21:33.137   RestartManager found no applications using one of our files.
+2026-08-24 14:21:33.138   Defaulting to OK for suppressed message box (OK):
+                          You must enter a full path with drive letter; for example:
+                          
+                          C:\APP
+                          
+                          or a UNC path in the form:
+                          
+                          \\server\share
+2026-08-24 14:21:33.139   Deinitializing Setup.
+2026-08-24 14:21:33.144   Log closed.

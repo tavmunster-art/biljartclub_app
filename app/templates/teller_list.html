@@ -1,0 +1,16 @@
+<h1 style="font-size:40px;">
+Kies een match
+</h1>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/css/teller.css">
+{% for m in matches %}
+<div style="margin:10px; padding:10px; border:1px solid #ccc">
+
+{{m.player1}} vs {{m.player2}} ({{m.game_type}})
+
+<button onclick="claim('{{m.id}}')">Start</button>
+
+</div>
+{% endfor %}
+
+<script src="/static/js/teller_list.js"></script>
