@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Gebruiksaanwijzing</title>
+<link rel="stylesheet" href="/static/css/help.css">
+
+
+</head>
+
+<body>
+
+<h1>📘 Gebruiksaanwijzing Biljart Competitie App</h1>
+
+<div class="section">
+
+<h2>🔹 Samenvatting</h2>
+
+<p>
+Deze applicatie ondersteunt het organiseren en registreren van biljartwedstrijden
+voor Libre en Band.
+</p>
+
+<p>
+De app werkt via een lokaal WiFi netwerk of een persoonlijke hotspot.
+De coordinator beheert spelers, wedstrijden en resultaten.
+Tellers gebruiken een telefoon, tablet of laptop om wedstrijden bij te houden.
+</p>
+
+<p>
+Resultaten worden eerst ter controle aangeboden aan de coordinator en pas daarna
+definitief opgeslagen in de database.
+</p>
+
+<div class="note">
+Dataverkeer is zeer beperkt:
+ongeveer 2 MB bij 4 tellers gedurende 3 uur.
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h2>👤 Coordinator</h2>
+
+<h3>Spelers selecteren</h3>
+
+<ul>
+<li>Vink aanwezige spelers aan</li>
+<li>Achter elke speler staat het aantal te maken caramboles:</li>
+<ul>
+<li><b>L</b> = Libre</li>
+<li><b>B</b> = Band</li>
+</ul>
+</ul>
+
+<h3>Spelers toevoegen</h3>
+
+<ul>
+<li>Nieuwe spelers kunnen direct worden toegevoegd</li>
+<li>Libre- en bandmoyenne worden meteen opgeslagen</li>
+</ul>
+
+<h3>Spelers verwijderen</h3>
+
+<div class="note">
+LET OP:
+Bij verwijderen worden naam, resultaten en historie definitief verwijderd.
+</div>
+
+<ul>
+<li>Klik op het rode kruis achter de spelernaam</li>
+</ul>
+
+<h3>Automatische wedstrijden maken</h3>
+
+<ul>
+<li>De app probeert spelers maximaal twee keer per seizoen tegen elkaar te laten spelen</li>
+<li>Niet-koppelbare spelers worden apart vermeld</li>
+<li>Elke koppeling genereert:</li>
+<ul>
+<li>1 Libre partij</li>
+<li>1 Band partij</li>
+</ul>
+</ul>
+
+<h3>Handmatige wedstrijd maken</h3>
+
+<ul>
+<li>Kies twee spelers</li>
+<li>Kies Libre of Band</li>
+<li>De wedstrijd verschijnt direct bij de tellers</li>
+</ul>
+
+<h3>Wedstrijdstatus</h3>
+
+<ul>
+<li>🟢 Beschikbaar → teller kan claimen</li>
+<li>🟠 Bezig → teller is actief</li>
+<li>⏳ Wacht op bevestiging → resultaat ontvangen</li>
+<li>🏆 Afgesloten → definitief opgeslagen</li>
+</ul>
+
+<h3>Handmatige invoer</h3>
+
+<ul>
+<li>Gebruik “Handmatig” wanneer op papier is geteld</li>
+<li>Bijvoorbeeld bij WiFi problemen of hotspot-uitval</li>
+</ul>
+
+<h3>Resultaten bevestigen</h3>
+
+<ul>
+<li>Tellers slaan resultaten niet direct op in de database op</li>
+<li>De coordinator controleert eerst de uitslag</li>
+<li>Na bevestiging worden resultaten definitief opgeslagen</li>
+</ul>
+
+<h3>Instellingen</h3>
+
+<ul>
+<li>Het maximaal aantal beurten kan worden ingesteld</li>
+<li>Het aantal te maken caramboles wordt automatisch berekend</li>
+</ul>
+
+<h3>Overzichten</h3>
+
+<ul>
+<li><b>Historie:</b> gespeelde wedstrijden</li>
+<li><b>Ranking:</b> actuele prestaties</li>
+<li><b>Dashboard:</b> grafieken en analyses</li>
+</ul>
+
+<h3>Backup en herstel</h3>
+
+<ul>
+<li>Maak backups van de database</li>
+<li>Herstel eerdere backups</li>
+</ul>
+
+<h3>Seizoen afsluiten</h3>
+
+<ul>
+<li>PDF rapport genereren</li>
+<li>Backup maken</li>
+<li>Startmoyennes aanpassen</li>
+<li>Resultaten van het seizoen verwijderen</li>
+</ul>
+
+</div>
+
+
+<div class="section">
+
+<h2>🎱 Teller / Speler</h2>
+
+<h3>Wedstrijd kiezen</h3>
+
+<ul>
+<li>Een teller ziet alleen beschikbare wedstrijden</li>
+<li>Na kiezen wordt de wedstrijd geclaimd</li>
+<li>Andere tellers kunnen deze wedstrijd dan niet meer openen</li>
+</ul>
+
+<h3>Tellen</h3>
+
+<ul>
+<li>Gebruik de grote +1 knop voor losse caramboles</li>
+<li>Gebruik “Serie” voor meerdere caramboles tegelijk</li>
+<li>De stand wordt automatisch bijgewerkt</li>
+</ul>
+
+<h3>Te maken caramboles</h3>
+
+<ul>
+<li>Het doel staat boven de score</li>
+<li>Bij behalen kleurt de score groen</li>
+</ul>
+
+<h3>Correctie</h3>
+
+<ul>
+<li>Gebruik “Undo” om de laatste beurt te verwijderen</li>
+</ul>
+
+<h3>Maximaal aantal beurten</h3>
+
+<ul>
+<li>Wordt ingesteld door de coordinator</li>
+<li>Na het maximum kan de wedstrijd worden afgesloten</li>
+</ul>
+
+<h3>Wedstrijd beëindigen</h3>
+
+<ul>
+<li>Klik op “Afsluiten”</li>
+<li>Het resultaat wordt verzonden naar de coordinator</li>
+<li>Pas na bevestiging wordt het definitief opgeslagen</li>
+</ul>
+
+<h3>Puntenberekening</h3>
+
+<ul>
+<li>Moyenne = caramboles / beurten</li>
+<li>Wedstrijdpunten worden berekend op basis van startmoyenne</li>
+<li>Bonuspunten:</li>
+<ul>
+<li>+2 voor winst</li>
+<li>+1 voor gelijkspel</li>
+</ul>
+</ul>
+
+</div>
+
+
+<div class="back">
+<a href="/coordinator">⬅ Terug naar coordinator</a>
+</div>
+
+</body>
+</html>

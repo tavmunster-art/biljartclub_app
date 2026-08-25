@@ -1,0 +1,203 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 10px;
+    text-align: center;
+    background: #f4f4f4;
+}
+
+/* spelers */
+.player {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
+}
+
+/* namen */
+.name {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* target */
+.target {
+    font-size: 22px;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+/* score */
+.score {
+    font-size: 64px;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+/* hoofdknop +1 */
+.big {
+    font-size: 36px;
+    width: 140px;
+    height: 140px;
+    border-radius: 20px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+/* serieblok */
+.series-box {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* serie invoer */
+.series-box input {
+    width: 120px;
+    height: 60px;
+    font-size: 28px;
+    text-align: center;
+    border-radius: 10px;
+    border: 1px solid #999;
+}
+
+/* OK knop */
+.series-box button {
+    width: 90px;
+    height: 60px;
+    font-size: 24px;
+    border-radius: 10px;
+    border: none;
+    background: #2196F3;
+    color: white;
+    cursor: pointer;
+}
+
+/* min knop */
+.minus {
+    width: 90px;
+    height: 60px;
+    font-size: 34px;
+    border-radius: 10px;
+    border: none;
+    background: #f44336;
+    color: white;
+    cursor: pointer;
+}
+
+/* beurten */
+.turns {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 25px 0;
+}
+
+/* actieknoppen */
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+/* uniforme actieknoppen */
+.actions button {
+    width: 180px;
+    height: 70px;
+    font-size: 24px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+}
+
+/* specifieke kleuren */
+.next-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.undo-btn {
+    background: #ff9800;
+    color: white;
+}
+
+.finish-btn {
+    background: #d32f2f;
+    color: white;
+    width: 240px !important;
+}
+
+/* teller lijst */
+/* MATCH SELECTIE */
+
+.match-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 25px;
+    padding: 10px;
+}
+
+.match-card {
+    background: white;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+}
+
+.match-card div {
+    font-size: 34px;
+    font-weight: bold;
+    margin-bottom: 18px;
+    line-height: 1.4;
+}
+
+.match-card button {
+    width: 100%;
+    height: 110px;
+    font-size: 38px;
+    font-weight: bold;
+    border-radius: 16px;
+    border: none;
+    background: #2196F3;
+    color: white;
+    cursor: pointer;
+}
+
+/* touch feedback */
+.match-card button:active {
+    transform: scale(0.98);
+}
+
+/* mobiel */
+@media (max-width: 700px) {
+
+    .score {
+        font-size: 56px;
+    }
+
+    .big {
+        width: 120px;
+        height: 120px;
+        font-size: 32px;
+    }
+
+    .actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .actions button {
+        width: 90%;
+    }
+
+    .finish-btn {
+        width: 90% !important;
+    }
+}
