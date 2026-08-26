@@ -112,6 +112,49 @@ def init_db():
     )
     """)
 
+    # tournooien
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS tournaments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        game_type TEXT NOT NULL,
+        max_turns INTEGER NOT NULL,
+        status TEXT NOT NULL DEFAULT 'groups',
+        created_at TEXT
+    )
+    """)
+
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS tournament_players (
+        tournament_id INTEGER NOT NULL,
+        player TEXT NOT NULL,
+        seed_avg REAL NOT NULL,
+        group_no INTEGER NOT NULL,
+        PRIMARY KEY (tournament_id, player)
+    )
+    """)
+
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS tournament_matches (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tournament_id INTEGER NOT NULL,
+        group_no INTEGER NOT NULL,
+        player1 TEXT NOT NULL,
+        player2 TEXT NOT NULL,
+        target1 INTEGER,
+        target2 INTEGER,
+        turns_played INTEGER,
+        caramboles1 INTEGER,
+        caramboles2 INTEGER,
+        turn_reached1 INTEGER,
+        turn_reached2 INTEGER,
+        points1 REAL,
+        points2 REAL,
+        winner TEXT,
+        status TEXT NOT NULL DEFAULT 'pending'
+    )
+    """)
+
     conn.commit()
 
     conn.close()

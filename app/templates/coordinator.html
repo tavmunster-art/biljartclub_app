@@ -36,6 +36,8 @@ padding:6px;
 
 </div>
 
+<a href="/tournament" style="margin-left:20px; font-weight:bold;">🏆 Tournooi</a>
+
 <button onclick="shutdownServer()"
 style="
 background:red;
@@ -251,7 +253,7 @@ HS:
 Bevestigen
 </button>
 
-<button onclick="correctPending('{{r.match_id}}')">
+<button onclick="correctPending('{{r.match_id}}', {{r.total1}}, {{r.high_run1}}, {{r.total2}}, {{r.high_run2}}, {{r.turns}})">
 Corrigeren
 </button>
 

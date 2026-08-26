@@ -50,12 +50,14 @@ async function approve(id){
 
 let correctionMatchId = null;
 
-function correctPending(id){
+function correctPending(id, total1, highRun1, total2, highRun2, turns){
     correctionMatchId = id;
 
-    for(const field of ["c_total1", "c_high_run1", "c_total2", "c_high_run2", "c_turns"]){
-        document.getElementById(field).value = "";
-    }
+    document.getElementById("c_total1").value = total1;
+    document.getElementById("c_high_run1").value = highRun1;
+    document.getElementById("c_total2").value = total2;
+    document.getElementById("c_high_run2").value = highRun2;
+    document.getElementById("c_turns").value = turns;
 
     document.getElementById("correctionModal").style.display = "block";
 }

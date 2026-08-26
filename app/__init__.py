@@ -16,6 +16,7 @@ def create_app():
     from app.routes.main import main_bp
     from app.routes.matches import matches_bp, restore_pending_results
     from app.routes.backup import backup_bp
+    from app.routes.tournament import tournament_bp
 
     restore_pending_results()
 
@@ -23,6 +24,7 @@ def create_app():
     app.register_blueprint(main_bp)
     app.register_blueprint(matches_bp)
     app.register_blueprint(backup_bp)
+    app.register_blueprint(tournament_bp)
 
     # 🔥 sockets
     # socketio.init_app(app)

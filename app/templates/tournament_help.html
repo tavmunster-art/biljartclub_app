@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tournooi - Uitleg</title>
+<link rel="stylesheet" href="/static/css/help.css">
+</head>
+
+<body>
+
+<h1>🏆 Uitleg Tournooi</h1>
+
+<div class="note">
+⚠️ <strong>Werk in uitvoering.</strong> Deze pagina beschrijft de huidige werking van de
+tournooi-module. Bij iedere wijziging of uitbreiding van de tournooi-functionaliteit
+moet deze pagina worden bijgewerkt zodat ze de actuele situatie blijft weergeven.
+</div>
+
+<div class="section">
+
+<h2>🔹 1. Opzet</h2>
+<p>
+Een tournooi wordt georganiseerd voor ongeveer 20 deelnemers en is per keuze
+<strong>Libre</strong> of <strong>Band</strong>. De coordinator bepaalt bij het
+aanmaken van het tournooi:
+</p>
+<ul>
+  <li>de naam van het tournooi</li>
+  <li>het soort tournooi (Libre of Band)</li>
+  <li>het maximaal aantal te spelen beurten per partij</li>
+  <li>de deelnemende spelers</li>
+</ul>
+
+<h2>🔹 2. Indeling in groepen</h2>
+<p>
+De spelers worden gesorteerd op hun huidige moyenne voor het gekozen spelsoort
+(van hoog naar laag). Bij het begin van het seizoen is dit het startmoyenne,
+later in het seizoen het moyenne zoals berekend in de ranking.
+</p>
+<p>Op basis van deze rangschikking wordt het aantal groepen bepaald:</p>
+<ul>
+  <li>3 t/m 5 spelers: 1 groep</li>
+  <li>6 t/m 8 spelers: 2 groepen</li>
+  <li>9 t/m 12 spelers: 3 groepen</li>
+  <li>13 t/m 20 spelers: 4 groepen</li>
+</ul>
+<p>
+De spelers worden zo gelijk mogelijk over de groepen verdeeld. De hoogste
+geplaatste speler komt in groep 1, de volgende in groep 2, enzovoort; daarna
+begint de verdeling opnieuw bij groep 1. Daardoor verschillen groepen maximaal
+één speler in grootte.
+</p>
+
+<h2>🔹 3. Groepsfase</h2>
+<p>
+Binnen elke groep speelt iedereen eenmaal tegen elkaar (round robin).
+</p>
+
+<h2>🔹 4. Bepalen van de winnaar van een partij</h2>
+<p>
+Elke speler moet, op basis van zijn eigen moyenne, een aantal te maken
+caramboles halen: <em>moyenne &times; maximaal aantal beurten</em>.
+</p>
+<ul>
+  <li>
+    Een speler wint zodra hij zijn te maken caramboles haalt in een beurt
+    waarin de tegenstander zijn te maken caramboles nog niet heeft gehaald.
+  </li>
+  <li>
+    Halen beide spelers hun te maken caramboles in dezelfde beurt, dan is de
+    partij gelijk.
+  </li>
+  <li>
+    Hebben beide spelers het maximaal aantal beurten gespeeld zonder hun te
+    maken caramboles te halen, dan wint de speler met het grootste quotiënt
+    <em>match moyenne &divide; spelermoyenne</em>. Bij gelijke quotiënten is de
+    partij gelijk.
+  </li>
+</ul>
+
+<h2>🔹 5. Puntentelling</h2>
+<ul>
+  <li>Winst: 1 punt</li>
+  <li>Gelijk: 0,5 punt</li>
+  <li>Verlies: 0 punten</li>
+</ul>
+
+<h2>🔹 6. Weerstandspunten</h2>
+<p>
+De weerstandspunten van een speler in een groep zijn de som van de moyennes
+van al zijn tegenstanders in die groep. Bij een gelijke stand in punten
+worden de weerstandspunten opgeteld bij de matchpunten; de speler met het
+grootste totaal eindigt hoger.
+</p>
+
+<h2>🔹 7. Finale</h2>
+<p>
+Bij 3 t/m 5 spelers is er één groep en is de winnaar van die groep direct de
+tournooiwinnaar. Bij 6 t/m 20 spelers spelen de winnaars van de groepen daarna
+volgens dezelfde regels (round robin, puntentelling en weerstandspunten) tegen
+elkaar. De winnaar van deze finalegroep is de tournooiwinnaar.
+</p>
+<p>
+De winnaar speelt nooit meer dan 7 partijen. Bij 20 spelers zijn dat maximaal
+4 partijen in een groep van 5 spelers en 3 partijen in de finale met 4 spelers.
+</p>
+
+<h2>🔹 8. Rapportage</h2>
+<p>
+Na het afsluiten van het tournooi wordt automatisch een PDF-rapport
+aangemaakt in de map <strong>Rapporten</strong>, met daarin per groep de
+eindstand en de gespeelde partijen, de finale-uitslag en de tournooiwinnaar.
+</p>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tournooi</title>
+<link rel="stylesheet" href="/static/css/tournament.css">
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Tournooi</h1>
+  <a href="/coordinator">&larr; Terug naar coordinator</a>
+  <a href="/tournament/help" target="_blank">📘 Help</a>
+</div>
+
+<hr>
+
+<div class="container">
+
+  <div class="column left-column">
+    <h2>Nieuw tournooi</h2>
+
+    <form id="createForm">
+      <label>Naam<br>
+        <input type="text" id="tName" required>
+      </label><br><br>
+
+      <label>Soort tournooi<br>
+        <select id="tGameType">
+          <option value="libre">Libre</option>
+          <option value="band">Band</option>
+        </select>
+      </label><br><br>
+
+      <label>Maximaal aantal beurten<br>
+        <input type="number" id="tMaxTurns" min="1" value="20" required>
+      </label><br><br>
+
+      <h3>Deelnemers</h3>
+      <div class="players-box">
+        {% for p in players %}
+        <label>
+          <input type="checkbox" name="tplayers" value="{{p}}">
+          {{p}}
+        </label><br>
+        {% endfor %}
+      </div><br>
+
+      <button type="button" onclick="createTournament()">Tournooi aanmaken</button>
+    </form>
+
+    <div id="createMsg" style="color:red; font-weight:bold;"></div>
+
+    <h2>Tournooien</h2>
+    <ul id="tournamentList">
+      {% for t in tournaments %}
+      <li>
+        <a href="#" onclick="loadTournament({{t.id}}); return false;">
+          {{t.name}} ({{t.game_type}}, {{t.status}})
+        </a>
+        <button type="button" onclick="deleteTournament({{t.id}})">❌</button>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="column right-column">
+    <div id="tournamentDetail">
+      <p>Selecteer een tournooi.</p>
+    </div>
+  </div>
+
+</div>
+
+<script src="/static/js/tournament.js"></script>
+</body>
+</html>
