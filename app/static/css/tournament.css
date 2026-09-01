@@ -1,0 +1,77 @@
+body {
+    font-family: Arial;
+    margin: 20px;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+}
+
+.column {
+    flex: 1;
+}
+
+.left-column {
+    flex: 1;
+}
+
+.right-column {
+    flex: 2;
+}
+
+.players-box {
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background: white;
+}
+
+.group-box {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: #fafafa;
+}
+
+table.standings {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+table.standings th, table.standings td {
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+    text-align: left;
+}
+
+.match-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+.match-row input {
+    width: 60px;
+}
+
+.match-row.done {
+    color: #555;
+}
+
+.champion {
+    font-size: 20px;
+    font-weight: bold;
+    color: #b8860b;
+}

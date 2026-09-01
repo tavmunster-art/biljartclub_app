@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Gebruiksaanwijzing</title>
+<link rel="stylesheet" href="/static/css/help.css">
+
+
+</head>
+
+<body>
+
+<h1>📘 Gebruiksaanwijzing Biljart Competitie App</h1>
+
+<div class="section">
+
+<h2>🔹 Samenvatting</h2>
+
+<p>
+Deze applicatie ondersteunt het organiseren en registreren van biljartwedstrijden
+voor Libre en Band.
+</p>
+
+<p>
+De app werkt via een lokaal WiFi netwerk of een persoonlijke hotspot.
+De coordinator beheert spelers, wedstrijden en resultaten.
+Tellers gebruiken een telefoon, tablet of laptop om wedstrijden bij te houden.
+</p>
+
+<p>
+Resultaten worden eerst ter controle aangeboden aan de coordinator en pas daarna
+definitief opgeslagen in de database.
+</p>
+
+<div class="note">
+De coordinator is beveiligd met een wachtwoord. Tellers hebben geen coordinator-login
+nodig en kunnen alleen actieve wedstrijden bekijken, claimen, tellen en afsluiten.
+</div>
+
+<div class="note">
+Dataverkeer is zeer beperkt:
+ongeveer 2 MB bij 4 tellers gedurende 3 uur.
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h2>🔐 Toegang en verbinding</h2>
+
+<h3>Coordinator</h3>
+
+<ul>
+<li>Open de app op de coordinator-laptop</li>
+<li>Log in met het coordinator-wachtwoord</li>
+<li>Alleen de coordinator kan spelers, wedstrijden, instellingen, backups en resultaten beheren</li>
+</ul>
+
+<h3>Teller-laptop, telefoon of tablet</h3>
+
+<ul>
+<li>Start de app alleen op de coordinator-laptop</li>
+<li>Verbind alle apparaten met hetzelfde WiFi-netwerk</li>
+<li>Open op een teller-apparaat het adres dat de coordinator bij het starten toont</li>
+<li>Gebruik het LAN-adres, bijvoorbeeld <b>http://192.168.2.14:5000/teller</b></li>
+<li>Gebruik niet <b>localhost</b> of <b>127.0.0.1</b> op een teller-apparaat</li>
+</ul>
+
+<div class="note">
+Werkt het adres niet? Controleer of beide apparaten op hetzelfde gewone WiFi-netwerk
+zitten en niet op een gastnetwerk met apparaat-isolatie.
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h2>👤 Coordinator</h2>
+
+<h3>Spelers selecteren</h3>
+
+<ul>
+<li>Vink aanwezige spelers aan</li>
+<li>Achter elke speler staat het aantal te maken caramboles:</li>
+<ul>
+<li><b>L</b> = Libre</li>
+<li><b>B</b> = Band</li>
+</ul>
+</ul>
+
+<h3>Spelers toevoegen</h3>
+
+<ul>
+<li>Ga naar <b>Gebruik</b> en kies bewust de checkbox <b>Nieuwe speler invoeren</b></li>
+<li>Daarna verschijnt het invoerveld voor een nieuwe speler</li>
+<li>Libre- en bandmoyenne worden meteen opgeslagen</li>
+</ul>
+
+<h3>Moyennes wijzigen</h3>
+
+<ul>
+<li>Ga naar <b>Gebruik</b> en kies bewust de checkbox <b>Moyenne wijzigen</b></li>
+<li>Selecteer de speler en pas Libre/Band moyenne handmatig aan</li>
+<li>Gebruik dit vooral na backup-herstel als doelcaramboles niet overeenkomen met de gewenste startsituatie</li>
+</ul>
+
+<h3>Spelers verwijderen</h3>
+
+<div class="note">
+LET OP:
+Bij verwijderen worden naam, resultaten en historie definitief verwijderd.
+</div>
+
+<ul>
+<li>Klik op het rode kruis achter de spelernaam</li>
+</ul>
+
+<h3>Automatische wedstrijden maken</h3>
+
+<ul>
+<li>De app probeert spelers maximaal twee keer per seizoen tegen elkaar te laten spelen</li>
+<li>Niet-koppelbare spelers worden apart vermeld</li>
+<li>Elke koppeling genereert:</li>
+<ul>
+<li>1 Libre partij</li>
+<li>1 Band partij</li>
+</ul>
+</ul>
+
+<h3>Handmatige wedstrijd maken</h3>
+
+<ul>
+<li>Kies twee spelers</li>
+<li>Kies Libre of Band</li>
+<li>De wedstrijd verschijnt direct bij de tellers</li>
+</ul>
+
+<h3>Wedstrijdstatus</h3>
+
+<ul>
+<li>🟢 Beschikbaar → teller kan claimen</li>
+<li>🟠 Bezig → teller is actief</li>
+<li>⏳ Wacht op bevestiging → resultaat ontvangen</li>
+<li>🏆 Afgesloten → definitief opgeslagen</li>
+</ul>
+
+<h3>Handmatige invoer</h3>
+
+<ul>
+<li>Gebruik “Handmatig” wanneer op papier is geteld</li>
+<li>Bijvoorbeeld bij WiFi problemen of hotspot-uitval</li>
+</ul>
+
+<h3>Resultaten bevestigen</h3>
+
+<ul>
+<li>Tellers slaan resultaten niet direct op in de database op</li>
+<li>De coordinator controleert eerst de uitslag</li>
+<li>Na bevestiging worden resultaten definitief opgeslagen</li>
+</ul>
+
+<h3>Instellingen</h3>
+
+<ul>
+<li>Het maximaal aantal beurten kan worden ingesteld</li>
+<li>Het aantal te maken caramboles wordt automatisch berekend</li>
+</ul>
+
+<h3>Overzichten</h3>
+
+<ul>
+<li><b>Historie:</b> gespeelde wedstrijden</li>
+<li><b>Ranking:</b> actuele prestaties</li>
+<li><b>Dashboard:</b> grafieken en analyses</li>
+</ul>
+
+<h3>Backup en herstel</h3>
+
+<ul>
+<li>Maak backups van de database</li>
+<li>Herstel eerdere backups</li>
+<li>Na herstel worden moyennes opnieuw afgeleid op basis van ranking-gegevens uit de herstelde database</li>
+<li>Wil je andere startmoyennes gebruiken, pas die daarna handmatig aan via <b>Gebruik → Moyenne wijzigen</b></li>
+</ul>
+
+<h3>Seizoen afsluiten</h3>
+
+<ul>
+<li>De coordinator bevestigt eerst de waarschuwing</li>
+<li>De database wordt eerst opgeslagen in een PDF-rapport en een backup</li>
+<li>Daarna worden de seizoensresultaten uit de database verwijderd</li>
+<li>Alleen spelersnamen en de nieuwe moyennes blijven behouden</li>
+<li>De nieuwe moyennes worden gebruikt voor doelcaramboles in het nieuwe seizoen</li>
+<li>Resultaten zijn terug te halen door de backup te herstellen</li>
+<li>Seizoen afsluiten kan niet zolang actieve of wachtende wedstrijden bestaan</li>
+</ul>
+
+<div class="note">
+De doelcaramboles van bestaande wedstrijden veranderen tijdens het seizoen niet.
+Nieuwe doelcaramboles worden pas na de seizoenafsluiting berekend met de nieuwe moyennes.
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h2>🎱 Teller / Speler</h2>
+
+<h3>Wedstrijd kiezen</h3>
+
+<ul>
+<li>Een teller ziet alleen beschikbare wedstrijden</li>
+<li>Na kiezen wordt de wedstrijd geclaimd</li>
+<li>Andere tellers kunnen deze wedstrijd dan niet meer openen</li>
+</ul>
+
+<h3>Tellen</h3>
+
+<ul>
+<li>Gebruik de grote +1 knop voor losse caramboles</li>
+<li>Gebruik “Serie” voor meerdere caramboles tegelijk</li>
+<li>De stand wordt automatisch bijgewerkt</li>
+</ul>
+
+<h3>Te maken caramboles</h3>
+
+<ul>
+<li>Het doel staat boven de score</li>
+<li>Bij behalen kleurt de score groen</li>
+</ul>
+
+<h3>Correctie</h3>
+
+<ul>
+<li>Gebruik “Undo” om de laatste beurt te verwijderen</li>
+</ul>
+
+<h3>Maximaal aantal beurten</h3>
+
+<ul>
+<li>Wordt ingesteld door de coordinator</li>
+<li>Na het maximum kan de wedstrijd worden afgesloten</li>
+</ul>
+
+<h3>Wedstrijd beëindigen</h3>
+
+<ul>
+<li>Klik op “Afsluiten”</li>
+<li>Het resultaat wordt verzonden naar de coordinator</li>
+<li>Pas na bevestiging wordt het definitief opgeslagen</li>
+</ul>
+
+<h3>Puntenberekening</h3>
+
+<ul>
+<li>Moyenne = caramboles / beurten</li>
+<li>Wedstrijdpunten worden berekend op basis van startmoyenne</li>
+<li>Bonuspunten:</li>
+<ul>
+<li>+2 voor winst</li>
+<li>+1 voor gelijkspel</li>
+</ul>
+</ul>
+
+</div>
+
+<div class="note">
+BiljartClubApp
+Versie 1.0.9
+Build: Linux Debian
+</div>
+
+
+<div class="back">
+<a href="/coordinator">⬅ Terug naar coordinator</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tournooi - Uitleg</title>
+<link rel="stylesheet" href="/static/css/help.css">
+</head>
+
+<body>
+
+<h1>🏆 Uitleg Tournooi</h1>
+
+<div class="note">
+⚠️ <strong>Werk in uitvoering.</strong> Deze pagina beschrijft de huidige werking van de
+tournooi-module. Bij iedere wijziging of uitbreiding van de tournooi-functionaliteit
+moet deze pagina worden bijgewerkt zodat ze de actuele situatie blijft weergeven.
+</div>
+
+<div class="section">
+
+<h2>🔹 1. Opzet</h2>
+<p>
+Een tournooi wordt georganiseerd voor ongeveer 20 deelnemers en is per keuze
+<strong>Libre</strong> of <strong>Band</strong>. De coordinator bepaalt bij het
+aanmaken van het tournooi:
+</p>
+<ul>
+  <li>de naam van het tournooi</li>
+  <li>het soort tournooi (Libre of Band)</li>
+  <li>het maximaal aantal te spelen beurten per partij</li>
+  <li>de deelnemende spelers</li>
+</ul>
+
+<h2>🔹 2. Indeling in groepen</h2>
+<p>
+De spelers worden gesorteerd op hun huidige moyenne voor het gekozen spelsoort
+(van hoog naar laag). Bij het begin van het seizoen is dit het startmoyenne,
+later in het seizoen het moyenne zoals berekend in de ranking.
+</p>
+<p>
+Het aantal groepen wordt op twee verschillende manieren bepaald, afhankelijk
+van hoe het tournooi wordt aangemaakt: <strong>handmatig</strong> (vaste
+tabel, alleen op basis van het aantal spelers) of via <strong>Advies</strong>
+(rekening houdend met het aantal tafels en de beschikbare speeltijd).
+</p>
+
+<h3>2.1 Handmatig aanmaken: vaste tabel</h3>
+<p>
+Bij handmatig aanmaken ("Tournooi aanmaken") wordt het aantal groepen alleen
+bepaald door het aantal spelers, ongeacht het aantal tafels:
+</p>
+<ul>
+  <li>3 t/m 5 spelers: 1 groep</li>
+  <li>6 t/m 8 spelers: 2 groepen</li>
+  <li>9 t/m 12 spelers: 3 groepen</li>
+  <li>13 t/m 20 spelers: 4 groepen</li>
+</ul>
+
+<h3>2.2 Aanbevolen aanmaken: op basis van tafels en speeltijd</h3>
+<p>
+Bij "Advies opvragen" / "Aanbevolen aanmaken" zoekt het programma zelf uit
+welk aantal groepen de beschikbare tafels het beste benut. Het probeert alle
+mogelijke aantallen groepen van 1 tot het kleinste van: het aantal tafels, en
+het aantal spelers gedeeld door 2 (elke groep heeft minstens 2 spelers nodig).
+Voor elk te proberen aantal groepen wordt berekend hoeveel partijen de
+<em>drukste</em> tafel na elkaar moet spelen (het "kritieke pad"), opgeteld
+over:
+</p>
+<ul>
+  <li>
+    de groepsfase: bij genoeg tafels (aantal tafels &ge; aantal groepen) speelt
+    elke groep op zijn eigen tafel, dus telt alleen de grootste groep mee. Zijn
+    er minder tafels dan groepen, dan draaien er meerdere volledige groepen na
+    elkaar op dezelfde tafel
+  </li>
+  <li>
+    de finaleronde: de groepswinnaars spelen daarna round robin tegen elkaar.
+    Omdat elke finalist tegen alle andere finalisten speelt, delen de
+    finalepartijen steeds spelers met elkaar en kunnen ze maar gedeeltelijk
+    gelijktijdig op meerdere tafels gespeeld worden
+  </li>
+</ul>
+<p>
+Het aantal groepen met het <strong>kortste</strong> kritieke pad wordt
+gekozen: dat is de indeling waarbij het tournooi (bij een gegeven aantal
+tafels) het snelst klaar is.
+</p>
+<div class="note">
+Voorbeeld: 12 spelers, 4 tafels. Het programma rekent alle opties door:
+<br>1 groep (van 12): drukste tafel speelt 66 partijen (geen finale nodig)
+<br>2 groepen (van 6): drukste tafel speelt 15 groepspartijen + 1 finalepartij = 16
+<br>3 groepen (van 4): drukste tafel speelt 6 groepspartijen + 3 finalepartijen = 9
+<br>4 groepen (van 3): drukste tafel speelt 3 groepspartijen + 3 finalepartijen = 6
+<br>Bij 4 tafels wint hier 4 groepen: het kortste kritieke pad (6), ook al is de
+finale dan met 4 in plaats van 2 of 3 finalisten.
+</div>
+<p>
+Is er zelfs met het beste aantal groepen te weinig tijd voor minstens 10
+beurten per partij, dan adviseert het programma in plaats daarvan een
+knock-outsysteem (zie hoofdstuk 10).
+</p>
+
+<h3>2.3 Het geadviseerde alternatief bij een knock-outsysteem</h3>
+<p>
+Bij een knock-outadvies berekent het programma er meteen een alternatief bij:
+hoeveel extra speeltijd nodig zou zijn om, met dezelfde spelers en tafels,
+tóch een groepensysteem met finale te kunnen spelen (bijvoorbeeld verspreid
+over meerdere dagen of met extra tijd op dezelfde dag). Daarbij wordt
+aangenomen dat elke speler minstens 10 beurten per partij wil spelen, in
+groepen van minstens 3 spelers.
+</p>
+<p>
+Het alternatief wordt op dezelfde manier bepaald als in 2.2, met één extra
+beperking: aantallen groepen die een groep kleiner dan 3 spelers zouden
+opleveren, worden niet meegenomen (zo'n kleine groep zou nauwelijks nog een
+groepsfase zijn). Van de overgebleven, toegestane aantallen groepen wordt
+weer het aantal met het kortste kritieke pad gekozen. Met dat pad wordt
+vervolgens teruggerekend hoeveel speeltijd nodig is voor minstens 10 beurten
+per partij:
+</p>
+<p style="text-align:center; font-size:1.1em;">
+benodigde minuten&nbsp;=&nbsp;&#8968;(kritiek&nbsp;pad &times; 2 &times; gemiddelde&nbsp;beurttijd &times; 10) / 60&#8969;
+</p>
+<div class="note">
+Voorbeeld: 10 spelers, 5 tafels. Zonder beperking zou 4 groepen worden
+gekozen (groepen van 3, 3, 2 en 2 spelers, kritiek pad 6) — maar de groepen
+van 2 spelers zijn te klein. Van de overgebleven opties (1, 2 of 3 groepen)
+wint 3 groepen (van 4, 3 en 3 spelers) met het kortste pad: 9. Bij
+bijvoorbeeld 30 seconden gemiddelde beurttijd is dan minstens
+9 &times; 2 &times; 30 &times; 10 = 5400 seconden = <strong>90 minuten</strong>
+speeltijd nodig voor een volwaardig groepensysteem met 3 groepen.
+</div>
+
+<h3>2.4 Verdeling van spelers over de groepen</h3>
+<p>
+Bij beide manieren van aanmaken worden de spelers zo gelijk mogelijk over de
+groepen verdeeld. De hoogste geplaatste speler komt in groep 1, de volgende in
+groep 2, enzovoort; daarna begint de verdeling opnieuw bij groep 1. Daardoor
+verschillen groepen maximaal één speler in grootte.
+</p>
+
+<h2>🔹 3. Groepsfase</h2>
+<p>
+Binnen elke groep speelt iedereen eenmaal tegen elkaar (round robin).
+</p>
+
+<h2>🔹 4. Bepalen van de winnaar van een partij</h2>
+<p>
+Elke speler moet, op basis van zijn eigen moyenne, een aantal te maken
+caramboles halen: <em>moyenne &times; maximaal aantal beurten</em>.
+</p>
+<ul>
+  <li>
+    Een speler wint zodra hij zijn te maken caramboles haalt in een beurt
+    waarin de tegenstander zijn te maken caramboles nog niet heeft gehaald.
+  </li>
+  <li>
+    Halen beide spelers hun te maken caramboles in dezelfde beurt, dan is de
+    partij gelijk.
+  </li>
+  <li>
+    Hebben beide spelers het maximaal aantal beurten gespeeld zonder hun te
+    maken caramboles te halen, dan wint de speler met het grootste quotiënt
+    <em>match moyenne &divide; spelermoyenne</em>. Bij gelijke quotiënten is de
+    partij gelijk.
+  </li>
+</ul>
+
+<h2>🔹 5. Puntentelling</h2>
+<ul>
+  <li>Winst: 1 punt</li>
+  <li>Gelijk: 0,5 punt</li>
+  <li>Verlies: 0 punten</li>
+</ul>
+
+<h2>🔹 6. Weerstandspunten</h2>
+<p>
+De weerstandspunten van een speler in een groep zijn de som van de moyennes
+van al zijn tegenstanders in die groep. Bij een gelijke stand in punten
+worden de weerstandspunten opgeteld bij de matchpunten; de speler met het
+grootste totaal eindigt hoger.
+</p>
+
+<h2>🔹 7. Finale</h2>
+<p>
+Bij 3 t/m 5 spelers is er één groep en is de winnaar van die groep direct de
+tournooiwinnaar. Bij 6 t/m 20 spelers spelen de winnaars van de groepen daarna
+volgens dezelfde regels (round robin, puntentelling en weerstandspunten) tegen
+elkaar. De winnaar van deze finalegroep is de tournooiwinnaar.
+</p>
+<p>
+De winnaar speelt nooit meer dan 7 partijen. Bij 20 spelers zijn dat maximaal
+4 partijen in een groep van 5 spelers en 3 partijen in de finale met 4 spelers.
+</p>
+
+<h2>🔹 8. Rapportage</h2>
+<p>
+Na het afsluiten van het tournooi wordt automatisch een PDF-rapport
+aangemaakt in de map <strong>Rapporten</strong>, met daarin per groep de
+eindstand en de gespeelde partijen, de finale-uitslag en de tournooiwinnaar.
+</p>
+
+<h2>🔹 9. Controle op het aantal wedstrijden</h2>
+<p>
+Met S = aantal spelers, G = aantal groepen en M = het totaal aantal partijen
+van de groepsfase plus de finale, geldt (bij gelijke groepsgrootte, dus S
+deelbaar door G):
+</p>
+<p style="text-align:center; font-size:1.1em;">
+M&nbsp;=&nbsp;(G<sup>3</sup> &minus; G<sup>2</sup> &minus; S&middot;G + S<sup>2</sup>) / (2&middot;G)
+</p>
+<p>
+Hiermee kan gecontroleerd worden of het aantal aangemaakte wedstrijden klopt.
+Zijn de groepen niet precies gelijk van grootte (S niet deelbaar door G), dan
+kan het werkelijke aantal iets hoger uitvallen dan deze formule aangeeft: een
+oneven verdeling levert altijd evenveel of meer partijen op dan een gelijke
+verdeling.
+</p>
+
+</div>
+
+
+<div class="section">
+
+<h2>🔹 10. Knock-outsysteem</h2>
+<p>
+Bij weinig speeltijd (te weinig beurten voor een volwaardige groepsfase)
+adviseert de app automatisch een knock-outsysteem in plaats van groepen met
+finale.
+</p>
+
+<h3>10.1 Indeling en paring</h3>
+<ul>
+  <li>Spelers worden gesorteerd op moyenne (hoog naar laag)</li>
+  <li>Paring via het vouwsysteem: hoogste tegen middelste, een-na-hoogste tegen
+      eerst-onder-gemiddelde, enzovoort</li>
+  <li>Elke ronde valt de helft van het veld af; wie wint gaat door naar de
+      volgende ronde</li>
+</ul>
+
+<h3>10.2 Bye bij een oneven aantal</h3>
+<ul>
+  <li>Is het aantal spelers in een ronde oneven, dan krijgt één speler een bye
+      (vrijloting) en gaat automatisch door naar de volgende ronde</li>
+  <li>Vanaf ronde 2 krijgt de speler met het <strong>hoogste partijmoyenne uit
+      de vorige ronde</strong> de bye</li>
+  <li>In ronde 1 is nog geen partij gespeeld; dan krijgt de laagst geplaatste
+      speler de bye</li>
+</ul>
+
+<h3>10.3 Gelijkspel in een knock-outronde</h3>
+<p>
+Een gelijkspel is niet bruikbaar in een knock-outronde: er moet een winnaar
+doorgaan. Bij een gelijke stand wordt de partij daarom automatisch beslist,
+in deze volgorde:
+</p>
+<ul>
+  <li>de speler met het hoogste partijmoyenne van déze partij wint</li>
+  <li>bij gelijke partijmoyennes wint de speler met de meeste weerstandspunten</li>
+  <li>zijn ook de weerstandspunten gelijk, dan beslist het lot: beide spelers
+      krijgen een willekeurig getal en de hoogste wint</li>
+</ul>
+
+<h3>10.4 Moyenne en weerstandspunten per ronde</h3>
+<p>
+Om dit controleerbaar te houden, toont de spelerslijst per ronde alleen de
+eigen cijfers van die ronde; ze worden niet doorgevoerd vanuit een vorige
+ronde:
+</p>
+<ul>
+  <li><strong>Moyenne:</strong> het partijmoyenne van de speler in déze ronde
+      (bij meerdere partijen in dezelfde ronde het gemiddelde daarvan)</li>
+  <li><strong>Weerstandspunten in ronde 1:</strong> de som van de moyennes van
+      alle andere spelers in het volledige deelnemersveld</li>
+  <li><strong>Weerstandspunten vanaf ronde 2:</strong> de som van de moyennes
+      die de daadwerkelijke tegenstander(s) van déze ronde in de
+      <em>vorige</em> ronde hadden</li>
+</ul>
+<p>
+Deze cijfers worden na elk ingevoerd resultaat direct bijgewerkt, zodat te
+controleren is of de gelijkspel-regels correct worden toegepast.
+</p>
+
+<h3>10.5 Laatste ronde: 2 of 3 spelers over</h3>
+<ul>
+  <li>Blijven er 2 spelers over, dan bepaalt één beslissende partij de
+      tournooiwinnaar (gelijkspel-regels zoals hierboven)</li>
+  <li>Blijven er 3 spelers over, dan speelt de laatste ronde als een
+      round-robin (ieder tegen ieder), net als bij een gewone groepsfase met
+      finale: hier <strong>mag</strong> een partij wél gelijk eindigen</li>
+  <li>Eindigt de round-robin-stand na punten én weerstandspunten nog gelijk,
+      dan gelden opnieuw de knock-out-regels om de tournooiwinnaar te bepalen:
+      eerst het hoogste (gemiddelde) partijmoyenne van die ronde, anders het
+      lot</li>
+</ul>
+
+</div>
+
+</body>
+</html>

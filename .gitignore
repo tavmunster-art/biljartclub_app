@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+instance/
+dist/
+build/
+venv/
+.venv/
+myenv/
+session.secret
+smoke/
+*.exe
+!installer/*.exe
+*.spec
+reports/
+backups/
+_internal/

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard</title>
+<link rel="stylesheet" href="/static/css/dashboard.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<h1>Dashboard</h1>
+
+<div class="controls">
+
+Van: <input type="date" id="from">
+Tot: <input type="date" id="to">
+
+<select id="playerSelect"></select>
+
+<button onclick="load()">Filter</button>
+
+</div>
+
+<div class="card">
+<div id="avgText" class="avg-box">Geen data</div>
+</div>
+
+<div class="charts">
+
+<div class="card chart-box">
+<h3>Libre</h3>
+<canvas id="libreChart"></canvas>
+</div>
+
+<div class="card chart-box">
+<h3>Band</h3>
+<canvas id="bandChart"></canvas>
+</div>
+
+</div>
+
+<script src="/static/js/dashboard.js"></script>
+
+<br>
+<a href="/">Terug</a>
+
+</body>
+</html>
